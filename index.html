@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoXpert - Concesionaria de Lujo</title>
+    <meta name="description" content="AutoXpert - La mejor concesionaria de vehículos de lujo. Lamborghini, Ferrari, Suzuki y más marcas premium.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Loader -->
+    <div id="loader" class="loader">
+        <div class="loader-content">
+            <div class="loader-logo">
+                <i class="fas fa-car"></i>
+                <span>AutoXpert</span>
+            </div>
+            <div class="loader-spinner"></div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-car"></i>
+                <span>AutoXpert</span>
+            </div>
+            
+            <ul class="nav-menu" id="nav-menu">
+                <li><a href="#inicio" class="nav-link">Inicio</a></li>
+                <li><a href="#catalogo" class="nav-link">Catálogo</a></li>
+                <li><a href="#talleres" class="nav-link">Talleres</a></li>
+                <li><a href="#equipo" class="nav-link">Nuestro Equipo</a></li>
+                <li><a href="#contacto" class="nav-link">Contacto</a></li>
+                <li><a href="#terminos" class="nav-link">Términos</a></li>
+            </ul>
+
+            <div class="nav-controls">
+                <button class="theme-toggle" id="theme-toggle" aria-label="Cambiar tema">
+                    <i class="fas fa-sun"></i>
+                </button>
+                <div class="hamburger" id="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="inicio" class="hero">
+        <!-- Video de fondo -->
+        <video autoplay muted loop playsinline id="bg-video">
+            <source src="lamborghini-huracan-evo.mp4" type="video/mp4">
+            Tu navegador no soporta videos.
+        </video>
+        
+        <!-- Contenido encima del video -->
+        <div class="hero-background"></div>
+        <div class="hero-content">
+            <h1 class="hero-title animate-fade-up">Bienvenido a AutoXpert</h1>
+            <p class="hero-subtitle animate-fade-up">La experiencia definitiva en vehículos de lujo</p>
+            <p class="hero-description animate-fade-up">Descubre nuestra exclusiva colección de Lamborghini, Ferrari, Suzuki y las marcas más prestigiosas del mundo automotriz</p>
+            <div class="hero-buttons animate-fade-up">
+                <a href="#catalogo" class="btn btn-primary">Ver Catálogo</a>
+                <a href="#contacto" class="btn btn-secondary">Contactar</a>
+            </div>
+        </div>
+        <div class="hero-scroll">
+            <span>Desliza para explorar</span>
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </section>
+
+    <!-- Catálogo de Vehículos -->
+    <section id="catalogo" class="catalog">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Nuestro Catálogo Exclusivo</h2>
+                <p class="section-subtitle">Vehículos de lujo seleccionados especialmente para ti</p>
+            </div>
+
+            <!-- Filtros -->
+            <div class="catalog-filters">
+                <button class="filter-btn active" data-filter="all">Todos</button>
+                <button class="filter-btn" data-filter="lamborghini">Lamborghini</button>
+                <button class="filter-btn" data-filter="ferrari">Ferrari</button>
+                <button class="filter-btn" data-filter="suzuki">Suzuki</button>
+                <button class="filter-btn" data-filter="porsche">Porsche</button>
+                <button class="filter-btn" data-filter="bmw">BMW</button>
+            </div>
+
+            <!-- Grid de Vehículos -->
+            <div class="vehicles-grid" id="vehicles-grid">
+                <!-- Los vehículos se cargarán dinámicamente con JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Talleres -->
+    <section id="talleres" class="workshops">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Nuestros Talleres</h2>
+                <p class="section-subtitle">Servicios especializados para tu vehículo de lujo</p>
+            </div>
+
+            <div class="workshops-grid">
+                <div class="workshop-card">
+                    <div class="workshop-icon">
+                        <i class="fas fa-wrench"></i>
+                    </div>
+                    <h3>Mantenimiento Premium</h3>
+                    <p>Servicio completo de mantenimiento con técnicos especializados en vehículos de lujo</p>
+                    <ul>
+                        <li>Cambio de aceite premium</li>
+                        <li>Revisión de frenos</li>
+                        <li>Diagnóstico computarizado</li>
+                        <li>Alineación y balanceo</li>
+                    </ul>
+                    <div class="workshop-actions">
+                        <button class="btn-primary" onclick="openModal('maintenanceModal')">Solicitar Servicio</button>
+                        <button class="btn-secondary" onclick="openModal('maintenanceInfoModal')">Más Información</button>
+                    </div>
+                </div>
+
+                <div class="workshop-card">
+                    <div class="workshop-icon">
+                        <i class="fas fa-paint-brush"></i>
+                    </div>
+                    <h3>Carrocería y Pintura</h3>
+                    <p>Restauración y personalización de carrocería con los más altos estándares</p>
+                    <ul>
+                        <li>Pintura automotriz premium</li>
+                        <li>Reparación de abolladuras</li>
+                        <li>Pulido y encerado</li>
+                        <li>Protección cerámica</li>
+                    </ul>
+                    <div class="workshop-actions">
+                        <button class="btn-primary" onclick="openModal('bodyworkModal')">Solicitar Servicio</button>
+                        <button class="btn-secondary" onclick="openModal('bodyworkInfoModal')">Más Información</button>
+                    </div>
+                </div>
+
+                <div class="workshop-card">
+                    <div class="workshop-icon">
+                        <i class="fas fa-cog"></i>
+                    </div>
+                    <h3>Mecánica Especializada</h3>
+                    <p>Reparaciones especializadas para motores de alto rendimiento</p>
+                    <ul>
+                        <li>Reparación de motor</li>
+                        <li>Sistema de transmisión</li>
+                        <li>Suspensión deportiva</li>
+                        <li>Sistema eléctrico</li>
+                    </ul>
+                    <div class="workshop-actions">
+                        <button class="btn-primary" onclick="openModal('mechanicsModal')">Solicitar Servicio</button>
+                        <button class="btn-secondary" onclick="openModal('mechanicsInfoModal')">Más Información</button>
+                    </div>
+                </div>
+
+                <!-- Nueva sección de servicios adicionales -->
+                <div class="workshop-card">
+                    <div class="workshop-icon">
+                        <i class="fas fa-car"></i>
+                    </div>
+                    <h3>Venta de Vehículos</h3>
+                    <p>Asesoría especializada en la compra y venta de vehículos de lujo</p>
+                    <ul>
+                        <li>Evaluación de vehículos</li>
+                        <li>Asesoría personalizada</li>
+                        <li>Trámites legales</li>
+                        <li>Garantía extendida</li>
+                    </ul>
+                    <div class="workshop-actions">
+                        <button class="btn-primary" onclick="openModal('salesModal')">Consultar Venta</button>
+                        <button class="btn-secondary" onclick="openModal('salesInfoModal')">Más Información</button>
+                    </div>
+                </div>
+
+                <div class="workshop-card">
+                    <div class="workshop-icon">
+                        <i class="fas fa-credit-card"></i>
+                    </div>
+                    <h3>Financiamiento</h3>
+                    <p>Planes de financiamiento flexibles para hacer realidad tu sueño</p>
+                    <ul>
+                        <li>Créditos preaprobados</li>
+                        <li>Tasas preferenciales</li>
+                        <li>Planes personalizados</li>
+                        <li>Proceso rápido</li>
+                    </ul>
+                    <div class="workshop-actions">
+                        <button class="btn-primary" onclick="openFinancingModal(vehicle.name, vehicle.price)">Comprar Ahora</button>
+                        <button class="btn-secondary" onclick="openModal('financingInfoModal')">Más Información</button>
+                    </div>
+                </div>
+
+                <div class="workshop-card">
+                    <div class="workshop-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Seguros</h3>
+                    <p>Protección integral para tu vehículo con las mejores aseguradoras</p>
+                    <ul>
+                        <li>Seguro todo riesgo</li>
+                        <li>Cobertura internacional</li>
+                        <li>Asistencia 24/7</li>
+                        <li>Valor convenido</li>
+                    </ul>
+                    <div class="workshop-actions">
+                        <button class="btn-primary" onclick="openModal('insuranceModal')">Cotizar Seguro</button>
+                        <button class="btn-secondary" onclick="openModal('insuranceInfoModal')">Más Información</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Nuestro Equipo -->
+    <section id="equipo" class="team">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Nuestro Equipo Profesional</h2>
+                <p class="section-subtitle">Expertos dedicados a brindarte la mejor experiencia</p>
+            </div>
+
+            <div class="team-grid">
+                <div class="team-member">
+                    <div class="member-image">
+                        <img src="https://emprendepyme.net/wp-content/uploads/2023/03/tareas-director-general.jpg" alt="Director General">
+                    </div>
+                    <div class="member-info">
+                        <h3>Carlos Mendoza</h3>
+                        <p class="member-role">Director General</p>
+                        <p class="member-description">15 años de experiencia en el sector automotriz de lujo</p>
+                        <div class="member-social">
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="team-member">
+                    <div class="member-image">
+                        <img src="https://www.esan.edu.pe/images/blog/20230807/dRG7Xt.jpg" alt="Gerente de Ventas">
+                    </div>
+                    <div class="member-info">
+                        <h3>Ana García</h3>
+                        <p class="member-role">Gerente de Ventas</p>
+                        <p class="member-description">Especialista en vehículos premium y atención personalizada</p>
+                        <div class="member-social">
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-instagram"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="team-member">
+                    <div class="member-image">
+                        <img src="https://st3.depositphotos.com/7417846/15303/i/450/depositphotos_153038794-stock-photo-portrait-of-a-young-beautiful.jpg" alt="Jefe de Taller">
+                    </div>
+                    <div class="member-info">
+                        <h3>Miguel Rodríguez</h3>
+                        <p class="member-role">Jefe de Taller</p>
+                        <p class="member-description">Técnico certificado en marcas europeas de lujo</p>
+                        <div class="member-social">
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-facebook"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="team-member">
+                    <div class="member-image">
+                        <img src="https://www.eaemadrid.com/sites/eae.mad/files/images/asesor-comercial-que-hace.jpg" alt="Asesora Comercial">
+                    </div>
+                    <div class="member-info">
+                        <h3>Laura Fernández</h3>
+                        <p class="member-role">Asesora Comercial</p>
+                        <p class="member-description">Experta en financiamiento y planes personalizados</p>
+                        <div class="member-social">
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contacto -->
+    <section id="contacto" class="contact">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Contáctanos</h2>
+                <p class="section-subtitle">Estamos aquí para ayudarte a encontrar tu vehículo ideal</p>
+            </div>
+
+            <div class="contact-content">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fab fa-whatsapp"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h3>WhatsApp</h3>
+                            <p>+51 986182856</p>
+                            <a href="https://wa.me/51986182856" class="btn btn-whatsapp" target="_blank">
+                                <i class="fab fa-whatsapp"></i> Chatear ahora
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h3>Email</h3>
+                            <p>jordanpmrojasbazan@gmail.com</p>
+                            <a href="mailto:jordanpmrojasbazan@gmail.com" class="btn btn-email">
+                                <i class="fas fa-envelope"></i> Enviar email
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h3>Ubicación</h3>
+                            <p>Lima, Perú</p>
+                            <p>Horarios: Lun - Sáb 9:00 AM - 7:00 PM</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="contact-form">
+                    <form id="contact-form">
+                        <div class="form-group">
+                            <input type="text" id="name" name="name" placeholder="Tu nombre" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" id="email" name="email" placeholder="Tu email" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="tel" id="phone" name="phone" placeholder="Tu teléfono">
+                        </div>
+                        <div class="form-group">
+                            <select id="interest" name="interest" required>
+                                <option value="">Selecciona tu interés</option>
+                                <option value="compra">Compra de vehículo</option>
+                                <option value="servicio">Servicio técnico</option>
+                                <option value="financiamiento">Financiamiento</option>
+                                <option value="otro">Otro</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <textarea id="message" name="message" placeholder="Tu mensaje" rows="5" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-full">
+                            <i class="fas fa-paper-plane"></i> Enviar mensaje
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Redes Sociales -->
+    <section class="social-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Síguenos en Redes Sociales</h2>
+                <p class="section-subtitle">Mantente al día con nuestras últimas novedades</p>
+            </div>
+
+            <div class="social-links">
+                <a href="#" class="social-link facebook" target="_blank">
+                    <i class="fab fa-facebook-f"></i>
+                    <span>Facebook</span>
+                </a>
+                <a href="#" class="social-link instagram" target="_blank">
+                    <i class="fab fa-instagram"></i>
+                    <span>Instagram</span>
+                </a>
+                <a href="#" class="social-link twitter" target="_blank">
+                    <i class="fab fa-twitter"></i>
+                    <span>Twitter</span>
+                </a>
+                <a href="#" class="social-link youtube" target="_blank">
+                    <i class="fab fa-youtube"></i>
+                    <span>YouTube</span>
+                </a>
+                <a href="#" class="social-link linkedin" target="_blank">
+                    <i class="fab fa-linkedin-in"></i>
+                    <span>LinkedIn</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Términos y Políticas -->
+    <section id="terminos" class="legal-section">
+        <div class="container">
+            <h2>Información Legal</h2>
+            <p>Consulta nuestros términos y políticas para conocer más sobre nuestros servicios.</p>
+            <div class="legal-buttons">
+                <button class="legal-btn" onclick="openModal('termsModal')">
+                    <i class="fas fa-file-contract"></i>
+                    <span>Términos de Servicio</span>
+                </button>
+                <button class="legal-btn" onclick="openModal('privacyModal')">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Política de Privacidad</span>
+                </button>
+                <button class="legal-btn" onclick="openModal('companyModal')">
+                    <i class="fas fa-building"></i>
+                    <span>Términos de Empresa</span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modales -->
+    <!-- Modal Términos de Servicio -->
+    <div id="termsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-file-contract"></i> Términos y Condiciones de AutoXpert</h2>
+                <span class="close" onclick="closeModal('termsModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="legal-content">
+                    <h3>1. Aceptación de Términos</h3>
+                    <p>Al utilizar nuestros servicios, usted acepta estos términos y condiciones en su totalidad.</p>
+                    
+                    <h3>2. Servicios Ofrecidos</h3>
+                    <p>AutoXpert ofrece servicios de venta de vehículos de lujo, mantenimiento especializado y asesoría comercial.</p>
+                    
+                    <h3>3. Garantías</h3>
+                    <p>Todos nuestros vehículos cuentan con garantía según las especificaciones del fabricante.</p>
+                    
+                    <h3>4. Responsabilidades del Cliente</h3>
+                    <p>El cliente se compromete a proporcionar información veraz y mantener la confidencialidad de sus datos de acceso.</p>
+                    
+                    <h3>5. Limitación de Responsabilidad</h3>
+                    <p>AutoXpert no será responsable por daños indirectos o consecuenciales derivados del uso de nuestros servicios.</p>
+                    
+                    <h3>6. Modificaciones</h3>
+                    <p>Nos reservamos el derecho de modificar estos términos en cualquier momento. Las modificaciones entrarán en vigor inmediatamente después de su publicación.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Política de Privacidad -->
+    <div id="privacyModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-shield-alt"></i> Política de Privacidad de AutoXpert</h2>
+                <span class="close" onclick="closeModal('privacyModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="legal-content">
+                    <h3>1. Recopilación de Información</h3>
+                    <p>Recopilamos información personal necesaria para brindar nuestros servicios de manera efectiva.</p>
+                    
+                    <h3>2. Uso de la Información</h3>
+                    <p>La información recopilada se utiliza exclusivamente para mejorar nuestros servicios y comunicarnos con usted.</p>
+                    
+                    <h3>3. Protección de Datos</h3>
+                    <p>Implementamos medidas de seguridad para proteger su información personal contra accesos no autorizados.</p>
+                    
+                    <h3>4. Compartir Información</h3>
+                    <p>No compartimos su información personal con terceros sin su consentimiento expreso.</p>
+                    
+                    <h3>5. Derechos del Usuario</h3>
+                    <p>Usted tiene derecho a acceder, modificar o eliminar su información personal en cualquier momento.</p>
+                    
+                    <h3>6. Cookies</h3>
+                    <p>Utilizamos cookies para mejorar su experiencia de navegación y personalizar nuestros servicios.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Términos de Empresa -->
+    <div id="companyModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-building"></i> Términos de Empresa AutoXpert</h2>
+                <span class="close" onclick="closeModal('companyModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="legal-content">
+                    <h3>1. Información Corporativa</h3>
+                    <p>AutoXpert es una empresa especializada en la venta y mantenimiento de vehículos de lujo, constituida bajo las leyes peruanas.</p>
+                    
+                    <h3>2. Misión</h3>
+                    <p>Brindar la mejor experiencia en vehículos de lujo, combinando calidad, elegancia y servicio excepcional.</p>
+                    
+                    <h3>3. Valores Corporativos</h3>
+                    <p>Integridad, excelencia, innovación y compromiso con la satisfacción del cliente son nuestros pilares fundamentales.</p>
+                    
+                    <h3>4. Certificaciones</h3>
+                    <p>Contamos con certificaciones de calidad ISO y somos distribuidores autorizados de las marcas más prestigiosas.</p>
+                    
+                    <h3>5. Responsabilidad Social</h3>
+                    <p>Estamos comprometidos con el desarrollo sostenible y la responsabilidad social empresarial.</p>
+                    
+                    <h3>6. Contacto Corporativo</h3>
+                    <p>Para consultas empresariales, contáctanos a través de nuestros canales oficiales de comunicación.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-car"></i>
+                        <span>AutoXpert</span>
+                    </div>
+                    <p>La experiencia definitiva en vehículos de lujo. Calidad, elegancia y servicio excepcional.</p>
+                    <div class="footer-social">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Enlaces Rápidos</h3>
+                    <ul>
+                        <li><a href="#inicio">Inicio</a></li>
+                        <li><a href="#catalogo">Catálogo</a></li>
+                        <li><a href="#talleres">Talleres</a></li>
+                        <li><a href="#equipo">Nuestro Equipo</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Servicios</h3>
+                    <ul>
+                        <li><a href="#">Venta de Vehículos</a></li>
+                        <li><a href="#">Mantenimiento</a></li>
+                        <li><a href="#">Financiamiento</a></li>
+                        <li><a href="#">Seguros</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Contacto</h3>
+                    <div class="footer-contact">
+                        <p><i class="fab fa-whatsapp"></i> +51 986182856</p>
+                        <p><i class="fas fa-envelope"></i> jordanpmrojasbazan@gmail.com</p>
+                        <p><i class="fas fa-map-marker-alt"></i> Lima, Perú</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2024 AutoXpert. Todos los derechos reservados.</p>
+                <div class="footer-legal">
+                    <a href="javascript:void(0)" onclick="openModal('termsModal')">Términos de Servicio</a>
+                    <a href="javascript:void(0)" onclick="openModal('privacyModal')">Política de Privacidad</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="back-to-top" aria-label="Volver arriba">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <!-- Modales de Servicios -->
+    <!-- Modal Mantenimiento -->
+    <div id="maintenanceModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('maintenanceModal')">&times;</span>
+            <h2><i class="fas fa-wrench"></i> Solicitar Servicio de Mantenimiento</h2>
+            <form class="service-form">
+                <div class="form-group">
+                    <label for="vehicleModel">Modelo del Vehículo:</label>
+                    <input type="text" id="vehicleModel" name="vehicleModel" required>
+                </div>
+                <div class="form-group">
+                    <label for="serviceType">Tipo de Servicio:</label>
+                    <select id="serviceType" name="serviceType" required>
+                        <option value="">Seleccionar servicio</option>
+                        <option value="cambio-aceite">Cambio de aceite premium</option>
+                        <option value="revision-frenos">Revisión de frenos</option>
+                        <option value="diagnostico">Diagnóstico computarizado</option>
+                        <option value="alineacion">Alineación y balanceo</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="preferredDate">Fecha Preferida:</label>
+                    <input type="date" id="preferredDate" name="preferredDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="customerName">Nombre Completo:</label>
+                    <input type="text" id="customerName" name="customerName" required>
+                </div>
+                <div class="form-group">
+                    <label for="customerPhone">Teléfono:</label>
+                    <input type="tel" id="customerPhone" name="customerPhone" required>
+                </div>
+                <div class="form-group">
+                    <label for="comments">Comentarios Adicionales:</label>
+                    <textarea id="comments" name="comments" rows="3"></textarea>
+                </div>
+                <button type="submit" class="btn-primary">Solicitar Cita</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Info Mantenimiento -->
+    <div id="maintenanceInfoModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('maintenanceInfoModal')">&times;</span>
+            <h2><i class="fas fa-info-circle"></i> Información de Mantenimiento Premium</h2>
+            <div class="service-info">
+                <h3><i class="fas fa-info-circle"></i> Información de Mantenimiento Premium</h3>
+                
+                <p>Mantén tu vehículo de lujo en perfectas condiciones con nuestro servicio de mantenimiento especializado, diseñado específicamente para vehículos premium.</p>
+                
+                <h4><i class="fas fa-cogs"></i> Nuestros Servicios Incluyen:</h4>
+                <ul>
+                    <li><strong>Cambio de aceite premium:</strong> Aceites sintéticos de la más alta calidad específicos para motores de lujo</li>
+                    <li><strong>Revisión de frenos:</strong> Inspección completa del sistema de frenado con tecnología avanzada</li>
+                    <li><strong>Diagnóstico computarizado:</strong> Análisis profundo con equipos especializados de última generación</li>
+                    <li><strong>Alineación y balanceo:</strong> Precisión milimétrica para un manejo perfecto y seguro</li>
+                </ul>
+                
+                <div class="service-process">
+                    <h4><i class="fas fa-shield-alt"></i> Garantía y Calidad:</h4>
+                    <div class="process-steps">
+                        <span class="process-step">Garantía 6 meses</span>
+                        <span class="process-arrow">o</span>
+                        <span class="process-step">10,000 km</span>
+                        <span class="process-arrow">+</span>
+                        <span class="process-step">Repuestos originales</span>
+                        <span class="process-arrow">+</span>
+                        <span class="process-step">Técnicos certificados</span>
+                    </div>
+                </div>
+                
+                <div class="service-process">
+                    <h4><i class="fas fa-clock"></i> Horarios de Atención:</h4>
+                    <div class="process-steps">
+                        <span class="process-step">Lunes - Viernes: 8:00 AM - 6:00 PM</span>
+                        <span class="process-arrow">|</span>
+                        <span class="process-step">Sábados: 8:00 AM - 2:00 PM</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Carrocería -->
+    <div id="bodyworkModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('bodyworkModal')">&times;</span>
+            <h2><i class="fas fa-paint-brush"></i> Solicitar Servicio de Carrocería</h2>
+            <form class="service-form">
+                <div class="form-group">
+                    <label for="bodyworkVehicle">Modelo del Vehículo:</label>
+                    <input type="text" id="bodyworkVehicle" name="bodyworkVehicle" required>
+                </div>
+                <div class="form-group">
+                    <label for="bodyworkService">Servicio Requerido:</label>
+                    <select id="bodyworkService" name="bodyworkService" required>
+                        <option value="">Seleccionar servicio</option>
+                        <option value="pintura">Pintura automotriz premium</option>
+                        <option value="abolladuras">Reparación de abolladuras</option>
+                        <option value="pulido">Pulido y encerado</option>
+                        <option value="ceramica">Protección cerámica</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="bodyworkDate">Fecha Preferida:</label>
+                    <input type="date" id="bodyworkDate" name="bodyworkDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="bodyworkName">Nombre Completo:</label>
+                    <input type="text" id="bodyworkName" name="bodyworkName" required>
+                </div>
+                <div class="form-group">
+                    <label for="bodyworkPhone">Teléfono:</label>
+                    <input type="tel" id="bodyworkPhone" name="bodyworkPhone" required>
+                </div>
+                <button type="submit" class="btn-primary">Solicitar Cotización</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Info Carrocería -->
+    <div id="bodyworkInfoModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('bodyworkInfoModal')">&times;</span>
+            <h2><i class="fas fa-info-circle"></i> Información de Carrocería y Pintura</h2>
+            <div class="service-info">
+                <h3><i class="fas fa-info-circle"></i> Información de Carrocería y Pintura</h3>
+                
+                <p>Nuestro taller especializado cuenta con la más avanzada tecnología para restaurar y mejorar la apariencia de tu vehículo, garantizando resultados de calidad premium.</p>
+                
+                <h4><i class="fas fa-tools"></i> Servicios Especializados:</h4>
+                <ul>
+                    <li><strong>Pintura automotriz premium:</strong> Cabinas de pintura con tecnología de punta y acabados de concesionario</li>
+                    <li><strong>Reparación de abolladuras:</strong> Técnicas PDR (Paintless Dent Repair) sin afectar la pintura original</li>
+                    <li><strong>Pulido y encerado:</strong> Restauración completa del brillo original con productos premium</li>
+                    <li><strong>Protección cerámica:</strong> Nanotecnología para protección duradera contra rayones y elementos</li>
+                </ul>
+                
+                <div class="service-process">
+                    <h4><i class="fas fa-clipboard-list"></i> Proceso de Trabajo:</h4>
+                    <div class="process-steps">
+                        <span class="process-step">Evaluación gratuita</span>
+                        <span class="process-arrow">→</span>
+                        <span class="process-step">Cotización detallada</span>
+                        <span class="process-arrow">→</span>
+                        <span class="process-step">Trabajo especializado</span>
+                        <span class="process-arrow">→</span>
+                        <span class="process-step">Control de calidad</span>
+                        <span class="process-arrow">→</span>
+                        <span class="process-step">Entrega</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Mecánica -->
+    <div id="mechanicsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('mechanicsModal')">&times;</span>
+            <h2><i class="fas fa-cog"></i> Solicitar Servicio de Mecánica</h2>
+            <form class="service-form">
+                <div class="form-group">
+                    <label for="mechanicsVehicle">Modelo del Vehículo:</label>
+                    <input type="text" id="mechanicsVehicle" name="mechanicsVehicle" required>
+                </div>
+                <div class="form-group">
+                    <label for="mechanicsService">Servicio Requerido:</label>
+                    <select id="mechanicsService" name="mechanicsService" required>
+                        <option value="">Seleccionar servicio</option>
+                        <option value="motor">Reparación de motor</option>
+                        <option value="transmision">Sistema de transmisión</option>
+                        <option value="suspension">Suspensión deportiva</option>
+                        <option value="electrico">Sistema eléctrico</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="mechanicsDate">Fecha Preferida:</label>
+                    <input type="date" id="mechanicsDate" name="mechanicsDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="mechanicsName">Nombre Completo:</label>
+                    <input type="text" id="mechanicsName" name="mechanicsName" required>
+                </div>
+                <div class="form-group">
+                    <label for="mechanicsPhone">Teléfono:</label>
+                    <input type="tel" id="mechanicsPhone" name="mechanicsPhone" required>
+                </div>
+                <button type="submit" class="btn-primary">Solicitar Diagnóstico</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Info Mecánica -->
+    <div id="mechanicsInfoModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('mechanicsInfoModal')">&times;</span>
+            <h2><i class="fas fa-info-circle"></i> Información de Mecánica Especializada</h2>
+            <div class="service-info">
+                <h3><i class="fas fa-info-circle"></i> Información de Mecánica Especializada</h3>
+                
+                <p>Nuestro taller de mecánica cuenta con la más avanzada tecnología y especialistas certificados para brindar el mejor servicio a vehículos de lujo y alto rendimiento.</p>
+                
+                <h4><i class="fas fa-wrench"></i> Servicios Especializados:</h4>
+                <ul>
+                    <li><strong>Reparación de motor:</strong> Especialistas certificados en motores de alto rendimiento y tecnología híbrida</li>
+                    <li><strong>Sistema de transmisión:</strong> Reparación y mantenimiento de transmisiones automática, manual y CVT</li>
+                    <li><strong>Suspensión deportiva:</strong> Ajustes precisos y reparaciones especializadas para máximo rendimiento</li>
+                    <li><strong>Sistema eléctrico:</strong> Diagnóstico computarizado avanzado y reparación de sistemas complejos</li>
+                </ul>
+                
+                <div class="service-process">
+                    <h4><i class="fas fa-microchip"></i> Tecnología Avanzada:</h4>
+                    <div class="process-steps">
+                        <span class="process-step">Equipos de diagnóstico</span>
+                        <span class="process-arrow">+</span>
+                        <span class="process-step">Técnicos certificados</span>
+                        <span class="process-arrow">+</span>
+                        <span class="process-step">Herramientas especializadas</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Ventas -->
+    <div id="salesModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('salesModal')">&times;</span>
+            <h2><i class="fas fa-car"></i> Consultar Venta de Vehículo</h2>
+            <form class="service-form">
+                <div class="form-group">
+                    <label for="salesInterest">Tipo de Interés:</label>
+                    <select id="salesInterest" name="salesInterest" required>
+                        <option value="">Seleccionar opción</option>
+                        <option value="compra">Comprar vehículo</option>
+                        <option value="venta">Vender mi vehículo</option>
+                        <option value="intercambio">Intercambio</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="salesBrand">Marca de Interés:</label>
+                    <input type="text" id="salesBrand" name="salesBrand" placeholder="Ej: BMW, Mercedes, Audi">
+                </div>
+                <div class="form-group">
+                    <label for="salesBudget">Presupuesto Aproximado:</label>
+                    <select id="salesBudget" name="salesBudget">
+                        <option value="">Seleccionar rango</option>
+                        <option value="50-100k">$50,000 - $100,000</option>
+                        <option value="100-200k">$100,000 - $200,000</option>
+                        <option value="200k+">$200,000+</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="salesName">Nombre Completo:</label>
+                    <input type="text" id="salesName" name="salesName" required>
+                </div>
+                <div class="form-group">
+                    <label for="salesPhone">Teléfono:</label>
+                    <input type="tel" id="salesPhone" name="salesPhone" required>
+                </div>
+                <div class="form-group">
+                    <label for="salesEmail">Email:</label>
+                    <input type="email" id="salesEmail" name="salesEmail" required>
+                </div>
+                <button type="submit" class="btn-primary">Contactar Asesor</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Info Ventas -->
+    <div id="salesInfoModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('salesInfoModal')">&times;</span>
+            <h2><i class="fas fa-info-circle"></i> Información de Ventas</h2>
+            <div class="service-info">
+                <h3><i class="fas fa-info-circle"></i> Información de Ventas</h3>
+                
+                <p>Ofrecemos un servicio integral de compra y venta de vehículos de lujo, con asesoría personalizada y los mejores precios del mercado.</p>
+                
+                <h4><i class="fas fa-handshake"></i> Nuestros Servicios:</h4>
+                <ul>
+                    <li><strong>Evaluación profesional:</strong> Tasación gratuita y precisa de tu vehículo por expertos certificados</li>
+                    <li><strong>Asesoría personalizada:</strong> Te ayudamos a encontrar el vehículo perfecto según tus necesidades</li>
+                    <li><strong>Trámites legales:</strong> Nos encargamos de toda la documentación y gestiones legales</li>
+                    <li><strong>Garantía extendida:</strong> Protección adicional y respaldo completo para tu inversión</li>
+                </ul>
+                
+                <div class="service-process">
+                    <h4><i class="fas fa-clipboard-list"></i> Proceso de Compra:</h4>
+                    <div class="process-steps">
+                        <span class="process-step">Consulta inicial</span>
+                        <span class="process-arrow">→</span>
+                        <span class="process-step">Evaluación</span>
+                        <span class="process-arrow">→</span>
+                        <span class="process-step">Financiamiento</span>
+                        <span class="process-arrow">→</span>
+                        <span class="process-step">Documentación</span>
+                        <span class="process-arrow">→</span>
+                        <span class="process-step">Entrega</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Métodos de Pago -->
+    <div id="financing-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('financing-modal')">&times;</span>
+            <h2><i class="fas fa-credit-card"></i> Métodos de Pago</h2>
+            <div class="payment-methods">
+                <div class="payment-method" onclick="selectPaymentMethod('card')">
+                    <div class="payment-icon">
+                        <i class="fas fa-credit-card"></i>
+                    </div>
+                    <h3>Tarjeta de Crédito/Débito</h3>
+                    <p>Pago seguro con tu tarjeta</p>
+                </div>
+                <div class="payment-method" onclick="selectPaymentMethod('yape')">
+                    <div class="payment-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3>Yape</h3>
+                    <p>Pago rápido con Yape</p>
+                </div>
+                <div class="payment-method" onclick="selectPaymentMethod('cash')">
+                    <div class="payment-icon">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <h3>Efectivo</h3>
+                    <p>Pago en concesionaria</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Pago con Tarjeta -->
+    <div id="card-payment-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('card-payment-modal')">&times;</span>
+            <h2><i class="fas fa-credit-card"></i> Pago con Tarjeta</h2>
+            <form class="payment-form" onsubmit="processCardPayment(event)">
+                <div class="form-group">
+                    <label for="cardNumber">Número de Tarjeta:</label>
+                    <input type="text" id="cardNumber" name="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="cardExpiry">Fecha de Vencimiento:</label>
+                        <input type="text" id="cardExpiry" name="cardExpiry" placeholder="MM/AA" maxlength="5" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="cardCVV">CVV:</label>
+                        <input type="text" id="cardCVV" name="cardCVV" placeholder="123" maxlength="4" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="cardName">Nombre del Titular:</label>
+                    <input type="text" id="cardName" name="cardName" placeholder="Nombre completo" required>
+                </div>
+                <div class="payment-summary">
+                    <div class="summary-item">
+                        <span>Vehículo:</span>
+                        <span id="cardVehicleName">-</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Total a Pagar:</span>
+                        <span id="cardTotalAmount">-</span>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">
+                    <i class="fas fa-lock"></i> Procesar Pago
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Pago con Yape -->
+    <div id="yape-payment-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('yape-payment-modal')">&times;</span>
+            <h2><i class="fas fa-mobile-alt"></i> Pago con Yape</h2>
+            <form class="payment-form" onsubmit="processYapePayment(event)">
+                <div class="form-group">
+                    <label for="yapePhone">Número de Teléfono:</label>
+                    <input type="tel" id="yapePhone" name="yapePhone" placeholder="987654321" required>
+                </div>
+                <div class="form-group">
+                    <label for="yapeName">Nombre Completo:</label>
+                    <input type="text" id="yapeName" name="yapeName" placeholder="Tu nombre completo" required>
+                </div>
+                <div class="payment-summary">
+                    <div class="summary-item">
+                        <span>Vehículo:</span>
+                        <span id="yapeVehicleName">-</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Total a Pagar:</span>
+                        <span id="yapeTotalAmount">-</span>
+                    </div>
+                </div>
+                <div class="yape-instructions">
+                    <p><i class="fas fa-info-circle"></i> Recibirás un mensaje de confirmación en tu teléfono para completar el pago.</p>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">
+                    <i class="fas fa-mobile-alt"></i> Enviar Solicitud de Pago
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Pago en Efectivo -->
+    <div id="cash-payment-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('cash-payment-modal')">&times;</span>
+            <h2><i class="fas fa-money-bill-wave"></i> Pago en Efectivo</h2>
+            <form class="payment-form" onsubmit="generateCashTicket(event)">
+                <div class="form-group">
+                    <label for="cashName">Nombre Completo:</label>
+                    <input type="text" id="cashName" name="cashName" placeholder="Tu nombre completo" required>
+                </div>
+                <div class="form-group">
+                    <label for="cashPhone">Teléfono:</label>
+                    <input type="tel" id="cashPhone" name="cashPhone" placeholder="987654321" required>
+                </div>
+                <div class="form-group">
+                    <label for="cashEmail">Email:</label>
+                    <input type="email" id="cashEmail" name="cashEmail" placeholder="tu@email.com" required>
+                </div>
+                <div class="payment-summary">
+                    <div class="summary-item">
+                        <span>Vehículo:</span>
+                        <span id="cashVehicleName">-</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Total a Pagar:</span>
+                        <span id="cashTotalAmount">-</span>
+                    </div>
+                </div>
+                <div class="cash-instructions">
+                    <p><i class="fas fa-info-circle"></i> Se generará un ticket que deberás presentar en nuestra concesionaria para completar la compra.</p>
+                    <p><i class="fas fa-map-marker-alt"></i> <strong>Dirección:</strong> Lima, Perú</p>
+                    <p><i class="fas fa-clock"></i> <strong>Horarios:</strong> Lun - Sáb 9:00 AM - 7:00 PM</p>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">
+                    <i class="fas fa-ticket-alt"></i> Generar Ticket
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Ticket Generado -->
+    <div id="ticket-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('ticket-modal')">&times;</span>
+            <h2><i class="fas fa-ticket-alt"></i> Ticket de Compra</h2>
+            <div id="ticket-content" class="ticket-content">
+                <!-- El contenido del ticket se generará dinámicamente -->
+            </div>
+            <div class="ticket-actions">
+                <button class="btn btn-primary" onclick="printTicket()">
+                    <i class="fas fa-print"></i> Imprimir Ticket
+                </button>
+                <button class="btn btn-secondary" onclick="downloadTicket()">
+                    <i class="fas fa-download"></i> Descargar PDF
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Info Financiamiento -->
+    <div id="financingInfoModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('financingInfoModal')">&times;</span>
+            <h2><i class="fas fa-info-circle"></i> Información de Financiamiento</h2>
+            <div class="service-info">
+                <h3><i class="fas fa-info-circle"></i> Información de Financiamiento</h3>
+                
+                <p>Ofrecemos las mejores opciones de financiamiento para que puedas adquirir el vehículo de tus sueños con planes flexibles y tasas competitivas.</p>
+                
+                <h4><i class="fas fa-credit-card"></i> Nuestros Planes:</h4>
+                <ul>
+                    <li><strong>Créditos preaprobados:</strong> Respuesta rápida en menos de 24 horas con aprobación inmediata</li>
+                    <li><strong>Tasas preferenciales:</strong> Las mejores tasas del mercado con condiciones especiales</li>
+                    <li><strong>Planes personalizados:</strong> Adaptados completamente a tu capacidad de pago y necesidades</li>
+                    <li><strong>Proceso rápido:</strong> Mínimos requisitos y trámites 100% digitales y ágiles</li>
+                </ul>
+                
+                <div class="service-process">
+                    <h4><i class="fas fa-file-alt"></i> Requisitos Básicos:</h4>
+                    <div class="process-steps">
+                        <span class="process-step">Identificación oficial</span>
+                        <span class="process-arrow">+</span>
+                        <span class="process-step">Comprobante de ingresos</span>
+                        <span class="process-arrow">+</span>
+                        <span class="process-step">Comprobante de domicilio</span>
+                        <span class="process-arrow">+</span>
+                        <span class="process-step">Referencias personales</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Seguros -->
+    <div id="insuranceModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('insuranceModal')">&times;</span>
+            <h2><i class="fas fa-shield-alt"></i> Cotizar Seguro</h2>
+            <form class="service-form">
+                <div class="form-group">
+                    <label for="insuranceVehicle">Modelo del Vehículo:</label>
+                    <input type="text" id="insuranceVehicle" name="insuranceVehicle" placeholder="Ej: BMW X5 2023" required>
+                </div>
+                <div class="form-group">
+                    <label for="insuranceValue">Valor del Vehículo:</label>
+                    <input type="number" id="insuranceValue" name="insuranceValue" placeholder="Ej: 120000" required>
+                </div>
+                <div class="form-group">
+                    <label for="insuranceType">Tipo de Cobertura:</label>
+                    <select id="insuranceType" name="insuranceType" required>
+                        <option value="">Seleccionar cobertura</option>
+                        <option value="amplia">Cobertura amplia</option>
+                        <option value="limitada">Cobertura limitada</option>
+                        <option value="rc">Solo responsabilidad civil</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="insuranceAge">Edad del Conductor:</label>
+                    <input type="number" id="insuranceAge" name="insuranceAge" min="18" max="80" required>
+                </div>
+                <div class="form-group">
+                    <label for="insuranceName">Nombre Completo:</label>
+                    <input type="text" id="insuranceName" name="insuranceName" required>
+                </div>
+                <div class="form-group">
+                    <label for="insurancePhone">Teléfono:</label>
+                    <input type="tel" id="insurancePhone" name="insurancePhone" required>
+                </div>
+                <button type="submit" class="btn-primary">Obtener Cotización</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Info Seguros -->
+    <div id="insuranceInfoModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('insuranceInfoModal')">&times;</span>
+            <h2><i class="fas fa-info-circle"></i> Información de Seguros</h2>
+            <div class="service-info">
+                <h3><i class="fas fa-info-circle"></i> Información de Seguros</h3>
+                
+                <p>Protege tu inversión con nuestros seguros especializados para vehículos de lujo, respaldados por las mejores aseguradoras del mercado.</p>
+                
+                <h4><i class="fas fa-shield-alt"></i> Nuestras Coberturas:</h4>
+                <ul>
+                    <li><strong>Seguro todo riesgo:</strong> Protección integral contra cualquier eventualidad, robo o accidente</li>
+                    <li><strong>Cobertura internacional:</strong> Protección completa en cualquier país del mundo</li>
+                    <li><strong>Asistencia 24/7:</strong> Grúa especializada y asistencia vial las 24 horas del día</li>
+                    <li><strong>Valor convenido:</strong> Sin depreciación en caso de pérdida total, valor garantizado</li>
+                </ul>
+                
+                <div class="service-process">
+                    <h4><i class="fas fa-handshake"></i> Aseguradoras Aliadas:</h4>
+                    <div class="process-steps">
+                        <span class="process-step">Mejores aseguradoras</span>
+                        <span class="process-arrow">+</span>
+                        <span class="process-step">Tarifas competitivas</span>
+                        <span class="process-arrow">+</span>
+                        <span class="process-step">Coberturas premium</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
