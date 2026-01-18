@@ -352,8 +352,21 @@
                         <div class="form-group">
                             <input type="email" id="email" name="email" placeholder="Tu email" required>
                         </div>
-                        <div class="form-group">
-                            <input type="tel" id="phone" name="phone" placeholder="Tu teléfono">
+                        <div class="form-group phone-group">
+                            <select id="country" name="country" class="phone-select" required>
+                                <option value="">Selecciona país</option>
+                                <option value="PE">🇵🇪 Perú (+51)</option>
+                                <option value="MX">🇲🇽 México (+52)</option>
+                                <option value="CO">🇨🇴 Colombia (+57)</option>
+                                <option value="CL">🇨🇱 Chile (+56)</option>
+                                <option value="AR">🇦🇷 Argentina (+54)</option>
+                                <option value="ES">🇪🇸 España (+34)</option>
+                                <option value="US">🇺🇸 Estados Unidos (+1)</option>
+                                <option value="BO">🇧🇴 Bolivia (+591)</option>
+                                <option value="EC">🇪🇨 Ecuador (+593)</option>
+                            </select>
+                            <input type="tel" id="countryCode" name="countryCode" class="country-code" placeholder="+51" readonly>
+                            <input type="tel" id="phone" name="phone" class="phone-input" placeholder="987654321" required>
                         </div>
                         <div class="form-group">
                             <select id="interest" name="interest" required>
@@ -367,7 +380,7 @@
                         <div class="form-group">
                             <textarea id="message" name="message" placeholder="Tu mensaje" rows="5" required></textarea>
                         </div>
-                        <button type="submit" class="btn btn-primary btn-full">
+                        <button type="submit" class="btn btn-primary btn-full" id="submit-btn">
                             <i class="fas fa-paper-plane"></i> Enviar mensaje
                         </button>
                     </form>
