@@ -319,7 +319,7 @@ function loadVehicleCatalog() {
             name: 'Suzuki Jimny',
             brand: 'suzuki',
             price: 'S/ 140,000',
-            image: 'https://rentacarmontino.cl/wp-content/uploads/2025/03/Suzuki-Jimny-Rent-a-Car-Montino-Coyhaique.jpg',
+            image: 'https://hips.hearstapps.com/hmg-prod/images/suzuki-jimny-sierra-4sport-1659104806.jpg?crop=0.973xw:1.00xh;0,0&resize=640:*',
             description: 'SUV compacto 4x4 perfecto para aventuras off-road.',
             specs: {
                 engine: '1.5L',
@@ -993,63 +993,94 @@ function showVehicleDetails(vehicleId) {
     
     const modalContent = `
         <div class="vehicle-details-modal">
-            <div class="vehicle-details-header">
-                <img src="${vehicle.image}" alt="${vehicle.name}" class="vehicle-detail-image">
-                <div class="vehicle-detail-info">
-                    <h2>${vehicle.name}</h2>
-                    <span class="vehicle-badge">${vehicle.badge}</span>
-                    <p class="vehicle-price">${vehicle.price}</p>
+            <div class="vehicle-details-header" style="background: linear-gradient(135deg, #06b6d4, #14b8a6);">
+                <div class="vehicle-header-content">
+                    <div class="vehicle-image-wrapper">
+                        <img src="${vehicle.image}" alt="${vehicle.name}" class="vehicle-detail-image">
+                    </div>
+                    <div class="vehicle-header-info">
+                        <span class="vehicle-badge-detail">${vehicle.badge}</span>
+                        <h2 class="vehicle-name-detail">${vehicle.name}</h2>
+                        <p class="vehicle-price-detail">${vehicle.price}</p>
+                    </div>
                 </div>
             </div>
             <div class="vehicle-details-body">
-                <p class="vehicle-description">${vehicle.description}</p>
-                <div class="vehicle-specs">
-                    <h3>Especificaciones Técnicas</h3>
-                    <div class="specs-grid">
-                        <div class="spec-item">
-                            <span class="spec-label">Motor:</span>
+                <p class="vehicle-description-detail">${vehicle.description}</p>
+                
+                <h3 class="specs-title"><i class="fas fa-cogs"></i> Especificaciones Técnicas</h3>
+                <div class="specs-grid-detail">
+                    <div class="spec-card">
+                        <div class="spec-icon"><i class="fas fa-engine"></i></div>
+                        <div class="spec-content">
+                            <span class="spec-label">Motor</span>
                             <span class="spec-value">${vehicle.specs.engine}</span>
                         </div>
-                        <div class="spec-item">
-                            <span class="spec-label">Potencia:</span>
+                    </div>
+                    <div class="spec-card">
+                        <div class="spec-icon"><i class="fas fa-bolt"></i></div>
+                        <div class="spec-content">
+                            <span class="spec-label">Potencia</span>
                             <span class="spec-value">${vehicle.specs.power}</span>
                         </div>
-                        <div class="spec-item">
-                            <span class="spec-label">Velocidad Máxima:</span>
+                    </div>
+                    <div class="spec-card">
+                        <div class="spec-icon"><i class="fas fa-tachometer-alt"></i></div>
+                        <div class="spec-content">
+                            <span class="spec-label">Velocidad Máxima</span>
                             <span class="spec-value">${vehicle.specs.speed}</span>
                         </div>
-                        <div class="spec-item">
-                            <span class="spec-label">Aceleración:</span>
+                    </div>
+                    <div class="spec-card">
+                        <div class="spec-icon"><i class="fas fa-rocket"></i></div>
+                        <div class="spec-content">
+                            <span class="spec-label">Aceleración 0-100</span>
                             <span class="spec-value">${vehicle.specs.acceleration}</span>
                         </div>
-                        <div class="spec-item">
-                            <span class="spec-label">Combustible:</span>
+                    </div>
+                    <div class="spec-card">
+                        <div class="spec-icon"><i class="fas fa-gas-pump"></i></div>
+                        <div class="spec-content">
+                            <span class="spec-label">Combustible</span>
                             <span class="spec-value">${vehicle.specs.fuel}</span>
                         </div>
-                        <div class="spec-item">
-                            <span class="spec-label">Asientos:</span>
+                    </div>
+                    <div class="spec-card">
+                        <div class="spec-icon"><i class="fas fa-chair"></i></div>
+                        <div class="spec-content">
+                            <span class="spec-label">Asientos</span>
                             <span class="spec-value">${vehicle.specs.seats}</span>
                         </div>
-                        <div class="spec-item">
-                            <span class="spec-label">Capacidad:</span>
+                    </div>
+                    <div class="spec-card">
+                        <div class="spec-icon"><i class="fas fa-users"></i></div>
+                        <div class="spec-content">
+                            <span class="spec-label">Capacidad</span>
                             <span class="spec-value">${vehicle.specs.capacity}</span>
                         </div>
-                        <div class="spec-item">
-                            <span class="spec-label">Transmisión:</span>
+                    </div>
+                    <div class="spec-card">
+                        <div class="spec-icon"><i class="fas fa-cog"></i></div>
+                        <div class="spec-content">
+                            <span class="spec-label">Transmisión</span>
                             <span class="spec-value">${vehicle.specs.transmission}</span>
                         </div>
-                        ${vehicle.specs.tires ? `
-                        <div class="spec-item">
-                            <span class="spec-label">Llantas:</span>
-                            <span class="spec-value">${vehicle.specs.tires}</span>
-                        </div>` : ''}
                     </div>
+                    ${vehicle.specs.tires ? `
+                    <div class="spec-card spec-card-full">
+                        <div class="spec-icon"><i class="fas fa-circle"></i></div>
+                        <div class="spec-content">
+                            <span class="spec-label">Llantas</span>
+                            <span class="spec-value">${vehicle.specs.tires}</span>
+                        </div>
+                    </div>` : ''}
                 </div>
-                <div class="vehicle-actions">
-                    <button class="btn btn-primary" onclick="contactVehicle('${vehicle.name}')">
+                
+                <div class="vehicle-actions-detail">
+                    <button class="btn btn-primary btn-large" onclick="contactVehicle('${vehicle.name}')">
                         <i class="fab fa-whatsapp"></i> Consultar por WhatsApp
                     </button>
-                    <button class="btn btn-secondary" onclick="openFinancingModal('${vehicle.name}', '${vehicle.price}')">
+                    <button class="btn btn-secondary btn-large" onclick="openFinancingModal('${vehicle.name}', '${vehicle.price}')">
                         <i class="fas fa-credit-card"></i> Comprar Ahora
                     </button>
                 </div>
@@ -1068,13 +1099,17 @@ function showVehicleDetails(vehicleId) {
     modal.className = 'modal';
     modal.innerHTML = `
         <div class="modal-content vehicle-modal-content">
-            <span class="close" onclick="closeModal('vehicle-details-modal')">&times;</span>
+            <span class="close" onclick="closeVehicleModal()">&times;</span>
             ${modalContent}
         </div>
     `;
     
     document.body.appendChild(modal);
-    openModal('vehicle-details-modal');
+    
+    // Usar requestAnimationFrame para mejor rendimiento
+    requestAnimationFrame(() => {
+        openModal('vehicle-details-modal');
+    });
 }
 
 // ===== FORMULARIOS =====
@@ -1366,33 +1401,81 @@ window.addEventListener('load', () => {
 function openModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
+        // Asegurar que el modal esté limpio antes de abrir
+        modal.style.opacity = '1';
         modal.style.display = 'flex';
-        modal.classList.add('show');
-        document.body.style.overflow = 'hidden';
         
-        // Animación de entrada
-        setTimeout(() => {
-            const modalContent = modal.querySelector('.modal-content');
-            if (modalContent) {
-                modalContent.style.transform = 'scale(1) translateY(0)';
-            }
-        }, 10);
+        // Usar requestAnimationFrame para mejor rendimiento
+        requestAnimationFrame(() => {
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        });
     }
 }
 
 function closeModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
-        const modalContent = modal.querySelector('.modal-content');
-        modalContent.style.transform = 'scale(0.8) translateY(-50px)';
+        // Para el modal de detalles del vehículo, eliminarlo inmediatamente
+        if (modalId === 'vehicle-details-modal') {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+            modal.remove();
+            return;
+        }
         
+        // Para modales de pago, cierre inmediato y limpio
+        if (modalId.includes('payment') || modalId === 'financing-modal' || modalId === 'ticket-modal') {
+            modal.classList.remove('show');
+            modal.style.opacity = '0';
+            setTimeout(() => {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+                modal.style.opacity = '1'; // Restaurar para próxima vez
+            }, 200);
+            return;
+        }
+        
+        // Para otros modales, usar animación normal
+        modal.classList.remove('show');
         setTimeout(() => {
             modal.style.display = 'none';
-            modal.classList.remove('show');
             document.body.style.overflow = 'auto';
         }, 300);
     }
 }
+
+// Función específica para cerrar el modal de vehículos instantáneamente
+function closeVehicleModal() {
+    const modal = document.getElementById('vehicle-details-modal');
+    if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+        modal.remove();
+    }
+}
+
+// Función para cerrar todos los modales abiertos
+function closeAllModals() {
+    // Cerrar modal de detalles del vehículo específicamente
+    const vehicleModal = document.getElementById('vehicle-details-modal');
+    if (vehicleModal) {
+        vehicleModal.style.display = 'none';
+        vehicleModal.remove();
+    }
+    
+    // Cerrar todos los demás modales
+    const openModals = document.querySelectorAll('.modal.show');
+    openModals.forEach(modal => {
+        modal.classList.remove('show');
+        modal.style.display = 'none';
+        modal.style.opacity = '1'; // Restaurar opacidad
+    });
+    
+    // Restaurar scroll del body
+    document.body.style.overflow = 'auto';
+}
+
 
 // Cerrar modal al hacer clic fuera del contenido
 function initializeModals() {
@@ -1604,53 +1687,62 @@ let currentPayment = {
 
 // Función para abrir modal de métodos de pago
 function openFinancingModal(vehicleName, vehiclePrice) {
-    currentPayment = {
-        vehicle: vehicleName,
-        amount: vehiclePrice,
-        method: null
-    };
+    // Primero cerrar TODOS los modales abiertos
+    closeAllModals();
     
-    const modal = document.getElementById('financing-modal');
-    
-    // Forzar la visibilidad del modal inmediatamente
-    if (modal) {
-        // Asegurar que el modal se muestre correctamente
-        modal.style.display = 'flex';
-        modal.style.visibility = 'visible';
-        modal.style.opacity = '1';
-        modal.classList.add('show');
-        document.body.style.overflow = 'hidden';
+    // Esperar un momento antes de abrir el modal de financiamiento
+    setTimeout(() => {
+        currentPayment = {
+            vehicle: vehicleName,
+            amount: vehiclePrice,
+            method: null
+        };
         
-        // Aplicar animación de entrada
-        setTimeout(() => {
-            const modalContent = modal.querySelector('.modal-content');
-            if (modalContent) {
-                modalContent.style.transform = 'scale(1) translateY(0)';
-            }
-        }, 50);
-    }
+        const modal = document.getElementById('financing-modal');
+        
+        if (modal) {
+            modal.style.display = 'flex';
+            modal.style.visibility = 'visible';
+            modal.style.opacity = '1';
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+            
+            setTimeout(() => {
+                const modalContent = modal.querySelector('.modal-content');
+                if (modalContent) {
+                    modalContent.style.transform = 'scale(1) translateY(0)';
+                }
+            }, 50);
+        }
+    }, 150); // Pausa más larga para asegurar que se cierren todos los modales
 }
 
 // Función para seleccionar método de pago
 function selectPaymentMethod(method) {
     currentPayment.method = method;
-    closeModal('financing-modal');
+    
+    // Cerrar el modal de métodos de pago de forma limpia
+    const financingModal = document.getElementById('financing-modal');
+    if (financingModal) {
+        financingModal.classList.remove('show');
+        financingModal.style.display = 'none';
+    }
     
     // Actualizar información del vehículo en todos los modales
     updatePaymentSummary();
     
-    // Abrir el modal correspondiente
-    switch(method) {
-        case 'card':
-            openModal('card-payment-modal');
-            break;
-        case 'yape':
-            openModal('yape-payment-modal');
-            break;
-        case 'cash':
-            openModal('cash-payment-modal');
-            break;
-    }
+    // Pequeña pausa antes de abrir el siguiente modal
+    setTimeout(() => {
+        // Abrir el modal correspondiente
+        switch(method) {
+            case 'card':
+                openModal('card-payment-modal');
+                break;
+            case 'cash':
+                openModal('cash-payment-modal');
+                break;
+        }
+    }, 100);
 }
 
 // Función para actualizar el resumen de pago
@@ -2058,6 +2150,8 @@ window.AutoXpert = {
 // Exponer funciones globalmente para compatibilidad
 window.openModal = openModal;
 window.closeModal = closeModal;
+window.closeVehicleModal = closeVehicleModal;
+window.closeAllModals = closeAllModals;
 window.showVehicleDetails = showVehicleDetails;
 window.contactVehicle = contactVehicle;
 window.openFinancingModal = openFinancingModal;
