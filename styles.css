@@ -1006,6 +1006,34 @@ body {
     box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.1);
 }
 
+.phone-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-md);
+    align-items: flex-end;
+    margin-bottom: var(--spacing-lg);
+}
+
+.phone-select,
+.phone-input {
+    width: 100%;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    font-family: inherit;
+    font-size: var(--font-size-base);
+    background: var(--background-primary);
+    color: var(--text-primary);
+    transition: all var(--transition-medium);
+}
+
+.phone-select:focus,
+.phone-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.1);
+}
+
 /* ===== REDES SOCIALES ===== */
 .social-section {
     padding: var(--spacing-xxl) 0;

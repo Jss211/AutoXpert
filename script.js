@@ -1223,33 +1223,99 @@ function isValidEmail(email) {
 }
 
 function showFormSuccess() {
-    // Crear notificación de éxito
+    // Crear notificación de éxito elegante
     const notification = document.createElement('div');
     notification.className = 'success-notification';
     notification.innerHTML = `
         <div style="
             position: fixed;
-            top: 20px;
-            right: 20px;
-            background: linear-gradient(135deg, #d4af37, #ff6b35);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
             color: white;
-            padding: 1rem 1.5rem;
-            border-radius: 0.75rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            padding: 2rem 2.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             z-index: 10000;
-            animation: slideInRight 0.5s ease-out;
+            animation: popIn 0.4s ease-out;
+            text-align: center;
+            max-width: 400px;
+            backdrop-filter: blur(10px);
         ">
-            <i class="fas fa-check-circle" style="margin-right: 0.5rem;"></i>
-            ¡Mensaje enviado correctamente! Te contactaremos pronto.
+            <div style="
+                font-size: 2.5rem;
+                margin-bottom: 1rem;
+                animation: scaleIn 0.6s ease-out;
+            ">
+                ✅
+            </div>
+            <div style="
+                font-size: 1.3rem;
+                font-weight: 700;
+                margin-bottom: 0.5rem;
+                letter-spacing: 0.5px;
+            ">
+                Mensaje Enviado Correctamente
+            </div>
+            <div style="
+                font-size: 0.95rem;
+                opacity: 0.95;
+                line-height: 1.5;
+            ">
+                Hemos recibido tu mensaje. Nos pondremos en contacto con información detallada muy pronto.
+            </div>
         </div>
     `;
     
     document.body.appendChild(notification);
     
-    // Remover después de 5 segundos
+    // Remover después de 4 segundos
     setTimeout(() => {
-        notification.remove();
-    }, 5000);
+        notification.style.animation = 'fadeOut 0.4s ease-out';
+        setTimeout(() => {
+            notification.remove();
+        }, 400);
+    }, 4000);
+}
+
+// Agregar estilos de animación
+if (!document.querySelector('style[data-custom-animations]')) {
+    const style = document.createElement('style');
+    style.setAttribute('data-custom-animations', '');
+    style.innerHTML = `
+        @keyframes popIn {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.8);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+        
+        @keyframes scaleIn {
+            0% {
+                opacity: 0;
+                transform: scale(0);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        @keyframes fadeOut {
+            0% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+            }
+        }
+    `;
+    document.head.appendChild(style);
 }
 
 // ===== TABS =====
