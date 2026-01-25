@@ -2755,3 +2755,232 @@ body {
         padding: 15px;
     }
 }
+
+/* ===== AUTH LANDING PAGE (TechStock Style) ===== */
+.auth-landing {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    min-height: 100vh;
+    background: #f0f2f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.auth-card-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    min-height: min-content; /* Ensures container grows with content */
+    padding: 20px 0; /* Add padding for scroll space */
+}
+
+.auth-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 40px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    text-align: center;
+    position: relative;
+    border: none;
+}
+
+.auth-card-logo {
+    margin-bottom: 25px;
+}
+
+.auth-card-logo i {
+    font-size: 40px;
+    color: #1877f2; /* TechStock Blue */
+    margin-bottom: 10px;
+    display: block;
+    background: none;
+    -webkit-text-fill-color: initial;
+}
+
+.auth-card-header h1 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1c1e21;
+    margin: 0 0 5px 0;
+}
+
+.auth-card-header p {
+    color: #606770;
+    font-size: 15px;
+    margin-bottom: 30px;
+}
+
+.social-auth-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.btn-social-auth {
+    width: 100%;
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid #dddfe2;
+    background: #fff;
+    color: #4b4f56;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.2s ease;
+    font-size: 15px;
+}
+
+.btn-social-auth:hover {
+    background: #f5f6f7;
+    transform: none;
+}
+
+.btn-social-auth.google i {
+    color: #DB4437;
+}
+
+.auth-divider-clean {
+    position: relative;
+    text-align: center;
+    margin: 20px 0;
+}
+
+.auth-divider-clean::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: #dadde1;
+    z-index: 1;
+}
+
+.auth-divider-clean span {
+    background: #fff;
+    padding: 0 15px;
+    color: #96999e;
+    font-size: 13px;
+    position: relative;
+    z-index: 2;
+}
+
+.form-group-clean {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.form-group-clean label {
+    display: none; /* Hide labels for cleaner look as requested */
+}
+
+.form-group-clean input {
+    width: 100%;
+    padding: 14px 16px;
+    background: #fff;
+    border: 1px solid #dddfe2;
+    border-radius: 6px;
+    color: #1c1e21;
+    font-size: 16px; /* 16px prevents zoom on iOS */
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-group-clean input:focus {
+    border-color: #1877f2;
+    box-shadow: 0 0 0 2px rgba(24, 119, 242, 0.2);
+    outline: none;
+}
+
+.btn-auth-submit {
+    width: 100%;
+    padding: 12px;
+    background: #1877f2; /* TechStock Blue */
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    margin-top: 10px;
+}
+
+.btn-auth-submit:hover {
+    background: #166fe5;
+    transform: none;
+    box-shadow: none;
+}
+
+.auth-card-footer {
+    margin-top: 20px;
+    font-size: 14px;
+    color: #606770;
+}
+
+.forgot-link {
+    display: block;
+    color: #1877f2;
+    text-decoration: none;
+    margin-bottom: 20px;
+    font-size: 14px;
+    transition: text-decoration 0.2s ease;
+}
+
+.forgot-link:hover {
+    text-decoration: underline;
+}
+
+.register-link {
+    border-top: 1px solid #dadde1;
+    padding-top: 20px;
+    margin-top: 20px;
+}
+
+.register-link a {
+    color: #1877f2;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 15px;
+}
+
+.register-link a:hover {
+    text-decoration: underline;
+}
+
+.auth-system-footer {
+    margin-top: 30px;
+    color: #8d949e;
+    font-size: 12px;
+    opacity: 1;
+}
+
+/* Visibility Toggle Classes */
+body.user-logged-in #auth-buttons {
+    display: none !important;
+}
+
+body.user-logged-in #user-profile {
+    display: block !important;
+}
+
+body:not(.user-logged-in) #user-profile {
+    display: none !important;
+}
+
+body:not(.user-logged-in) #auth-buttons {
+    display: flex !important;
+}
+

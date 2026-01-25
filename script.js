@@ -3,18 +3,55 @@ let currentTheme = localStorage.getItem('theme') || 'light';
 let isLoading = true;
 let currentFilter = 'all';
 let vehiclesData = [];
+let currentUser = null;
+
+// ===== CONFIGURACIÓN DE FIREBASE =====
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAuth, GoogleAuthProvider } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
+import { getAnalytics } from "firebase/analytics";
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+    apiKey: "AIzaSyAbdBuXv-ng53R5Aff0_HcP1Q9JelWzZvg",
+    authDomain: "autoxpert-e3d12.firebaseapp.com",
+    projectId: "autoxpert-e3d12",
+    storageBucket: "autoxpert-e3d12.firebasestorage.app",
+    messagingSenderId: "9964639787711",
+    appId: "1:9964639787711:web:4f7cea4c811f7e510f92e6",
+    measurementId: "G-BCJXM576VH"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+
+// Initialize Firebase Authentication and get a reference to the service
+const auth = getAuth(app);
+const googleProvider = new GoogleAuthProvider();
+googleProvider.addScope('email');
+googleProvider.addScope('profile');
+
+// Initialize Cloud Firestore and get a reference to the service
+const db = getFirestore(app);
+
+// Initialize Analytics
+const analytics = getAnalytics(app);
+
+// Detectar si estamos en modo demo (sin configuración real)
+const isDemoMode = false; // Ahora tenemos Firebase real configurado
 
 // ===== INICIALIZACIÓN =====
 document.addEventListener('DOMContentLoaded', function() {
-    initializeApp();
+    initializeAppUI();
+    initializeAuth();
 });
 
-function initializeApp() {
+function initializeAppUI() {
     // Aplicar tema guardado
     applyTheme(currentTheme);
     
     // Inicializar componentes
-    initializeLoader();
     initializeNavigation();
     initializeThemeToggle();
     initializeScrollEffects();
@@ -31,20 +68,437 @@ function initializeApp() {
     console.log('🚗 AutoXpert - Aplicación inicializada correctamente');
 }
 
-// ===== LOADER =====
-function initializeLoader() {
-    const loader = document.querySelector('.loader');
+// ===== AUTENTICACIÓN =====
+function initializeAuth() {
+    // Escuchar cambios en el estado de autenticación
+    auth.onAuthStateChanged((user) => {
+        const authLanding = document.getElementById('auth-landing');
+        const mainApp = document.getElementById('main-app');
+
+        if (user) {
+            currentUser = user;
+            
+            // Add logged-in class to body for CSS toggling
+            document.body.classList.add('user-logged-in');
+            
+            // Hide landing, show app
+            if (authLanding) authLanding.style.display = 'none';
+            if (mainApp) {
+                mainApp.style.display = 'block';
+                // Trigger scroll animations for hero section since it's now visible
+                setTimeout(triggerScrollAnimations, 500);
+            }
+
+            // showUserProfile is now handled by CSS via body class, but we keep it for avatar update if needed
+            showUserProfile(user);
+            
+            // Si el usuario no ha verificado su email, mostrar modal
+            if (!user.emailVerified && !user.providerData.some(p => p.providerId === 'google.com')) {
+                showEmailVerificationModal(user.email);
+            }
+        } else {
+            currentUser = null;
+            
+            // Remove logged-in class
+            document.body.classList.remove('user-logged-in');
+            
+            // Show landing, hide app
+            if (authLanding) authLanding.style.display = 'flex';
+            if (mainApp) mainApp.style.display = 'none';
+
+            showAuthButtons();
+        }
+        
+        // Ocultar loader después de verificar autenticación
+        if (isLoading) {
+            setTimeout(() => {
+                hideLoader();
+            }, 1500);
+        }
+    });
     
-    // Simular carga de contenido
-    setTimeout(() => {
+    // Inicializar formularios de autenticación
+    initializeAuthForms();
+}
+
+function showUserProfile(user) {
+    const authButtons = document.getElementById('auth-buttons');
+    const userProfile = document.getElementById('user-profile');
+    
+    // Hide auth buttons (Login/Register)
+    if (authButtons) authButtons.style.display = 'none';
+    
+    // Show user profile section (which now contains only Logout button)
+    if (userProfile) userProfile.style.display = 'block';
+}
+
+function showAuthButtons() {
+    const authButtons = document.getElementById('auth-buttons');
+    const userProfile = document.getElementById('user-profile');
+    
+    if (authButtons) authButtons.style.display = 'flex';
+    if (userProfile) userProfile.style.display = 'none';
+}
+
+function hideLoader() {
+    const loader = document.querySelector('.loader');
+    if (loader) {
         loader.classList.add('hidden');
         isLoading = false;
         
-        // Activar animaciones después de cargar
         setTimeout(() => {
             triggerScrollAnimations();
         }, 500);
-    }, 2000);
+    }
+}
+
+// ===== FUNCIONES DE AUTENTICACIÓN =====
+
+function initializeAuthForms() {
+    // Formulario de login
+    const loginForm = document.getElementById('login-form');
+    if (loginForm) {
+        loginForm.addEventListener('submit', handleLogin);
+    }
+    
+    // Formulario de registro
+    const registerForm = document.getElementById('register-form');
+    if (registerForm) {
+        registerForm.addEventListener('submit', handleRegister);
+    }
+    
+    // Formulario de recuperar contraseña
+    const forgotForm = document.getElementById('forgot-password-form');
+    if (forgotForm) {
+        forgotForm.addEventListener('submit', handleForgotPassword);
+    }
+    
+    // Validación de contraseña en tiempo real
+    const registerPassword = document.getElementById('register-password');
+    if (registerPassword) {
+        registerPassword.addEventListener('input', checkPasswordStrength);
+    }
+}
+
+async function handleLogin(e) {
+    e.preventDefault();
+    
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    
+    try {
+        showLoading(submitBtn);
+        
+        const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
+        
+        showAuthSuccess('¡Bienvenido de vuelta!');
+        closeModal('login-modal');
+        
+        // Guardar preferencia de recordar
+        const rememberMe = document.getElementById('remember-me').checked;
+        if (rememberMe) {
+            await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+        }
+        
+    } catch (error) {
+        showAuthError(getAuthErrorMessage(error.code));
+    } finally {
+        hideLoading(submitBtn, '<i class="fas fa-sign-in-alt"></i> Iniciar Sesión');
+    }
+}
+
+async function handleRegister(e) {
+    e.preventDefault();
+    
+    const firstName = document.getElementById('register-firstname').value;
+    const lastName = document.getElementById('register-lastname').value;
+    const email = document.getElementById('register-email').value;
+    const phone = document.getElementById('register-phone').value;
+    const password = document.getElementById('register-password').value;
+    const confirmPassword = document.getElementById('register-confirm-password').value;
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    
+    // Validaciones
+    if (password !== confirmPassword) {
+        showAuthError('Las contraseñas no coinciden');
+        return;
+    }
+    
+    if (password.length < 6) {
+        showAuthError('La contraseña debe tener al menos 6 caracteres');
+        return;
+    }
+    
+    try {
+        showLoading(submitBtn);
+        
+        // Crear usuario
+        const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
+        const user = userCredential.user;
+        
+        // Actualizar perfil
+        await user.updateProfile({
+            displayName: `${firstName} ${lastName}`
+        });
+        
+        // Guardar datos adicionales en Firestore
+        await firebase.firestore().collection('users').doc(user.uid).set({
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            phone: phone,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            newsletter: document.getElementById('accept-newsletter').checked
+        });
+        
+        // Enviar email de verificación
+        await user.sendEmailVerification({
+            url: window.location.origin,
+            handleCodeInApp: false
+        });
+        
+        showAuthSuccess('¡Cuenta creada exitosamente! Revisa tu email para verificar tu cuenta.');
+        closeModal('register-modal');
+        showEmailVerificationModal(email);
+        
+    } catch (error) {
+        showAuthError(getAuthErrorMessage(error.code));
+    } finally {
+        hideLoading(submitBtn, '<i class="fas fa-user-plus"></i> Crear Cuenta');
+    }
+}
+
+async function handleForgotPassword(e) {
+    e.preventDefault();
+    
+    const email = document.getElementById('forgot-email').value;
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    
+    try {
+        showLoading(submitBtn);
+        
+        await firebase.auth().sendPasswordResetEmail(email);
+        
+        showAuthSuccess('¡Enlace enviado! Revisa tu email para restablecer tu contraseña.');
+        closeModal('forgot-password-modal');
+        
+    } catch (error) {
+        showAuthError(getAuthErrorMessage(error.code));
+    } finally {
+        hideLoading(submitBtn, '<i class="fas fa-paper-plane"></i> Enviar Enlace');
+    }
+}
+
+async function loginWithGoogle() {
+    try {
+        if (isDemoMode) {
+            // Simular login con Google
+            const mockUser = {
+                uid: 'demo-google-user',
+                email: 'demo@google.com',
+                displayName: 'Demo User',
+                photoURL: 'https://via.placeholder.com/150',
+                emailVerified: true
+            };
+            sessionStorage.setItem('demoUser', JSON.stringify(mockUser));
+            showAuthSuccess('¡Bienvenido (Modo Demo)!');
+            setTimeout(() => location.reload(), 1000);
+            return;
+        }
+
+        const result = await firebase.auth().signInWithPopup(googleProvider);
+        const user = result.user;
+        
+        // Si es un nuevo usuario, guardar datos en Firestore
+        if (result.additionalUserInfo.isNewUser) {
+            await firebase.firestore().collection('users').doc(user.uid).set({
+                firstName: user.displayName?.split(' ')[0] || '',
+                lastName: user.displayName?.split(' ').slice(1).join(' ') || '',
+                email: user.email,
+                photoURL: user.photoURL,
+                provider: 'google',
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+        }
+        
+        showAuthSuccess('¡Bienvenido!');
+        closeModal('login-modal');
+        closeModal('register-modal');
+        
+    } catch (error) {
+        console.error('Google Auth Error:', error);
+        showAuthError(getAuthErrorMessage(error.code));
+    }
+}
+
+async function registerWithGoogle() {
+    await loginWithGoogle(); // Mismo proceso para registro
+}
+
+async function logout() {
+    try {
+        if (isDemoMode) {
+            sessionStorage.removeItem('demoUser');
+            currentUser = null;
+            
+            // Redirect to Auth Landing logic
+            const authLanding = document.getElementById('auth-landing');
+            const mainApp = document.getElementById('main-app');
+            
+            if (mainApp) mainApp.style.display = 'none';
+            if (authLanding) authLanding.style.display = 'flex';
+            
+            showAuthSuccess('¡Hasta pronto!');
+            
+            // Reset forms if needed
+            location.reload(); 
+            return;
+        }
+
+        await firebase.auth().signOut();
+        showAuthSuccess('¡Hasta pronto!');
+        
+        // UI updates handled by onAuthStateChanged, but force reload to ensure clean state
+        location.reload();
+        
+    } catch (error) {
+        showAuthError('Error al cerrar sesión');
+    }
+}
+
+// Funciones auxiliares
+function togglePassword(inputId) {
+    const input = document.getElementById(inputId);
+    const button = input.parentElement.querySelector('.toggle-password i');
+    
+    if (input.type === 'password') {
+        input.type = 'text';
+        button.className = 'fas fa-eye-slash';
+    } else {
+        input.type = 'password';
+        button.className = 'fas fa-eye';
+    }
+}
+
+function checkPasswordStrength() {
+    const password = document.getElementById('register-password').value;
+    const strengthIndicator = document.getElementById('password-strength');
+    
+    if (!strengthIndicator) return;
+    
+    let strength = 0;
+    
+    if (password.length >= 6) strength++;
+    if (password.match(/[a-z]/)) strength++;
+    if (password.match(/[A-Z]/)) strength++;
+    if (password.match(/[0-9]/)) strength++;
+    if (password.match(/[^a-zA-Z0-9]/)) strength++;
+    
+    strengthIndicator.className = 'password-strength';
+    
+    if (strength < 2) {
+        strengthIndicator.classList.add('weak');
+    } else if (strength < 4) {
+        strengthIndicator.classList.add('medium');
+    } else {
+        strengthIndicator.classList.add('strong');
+    }
+}
+
+function toggleUserMenu() {
+    const userMenu = document.getElementById('user-menu');
+    if (userMenu) {
+        userMenu.classList.toggle('show');
+    }
+}
+
+function showEmailVerificationModal(email) {
+    const modal = document.getElementById('email-verification-modal');
+    const emailSpan = document.getElementById('verification-email');
+    
+    if (emailSpan) {
+        emailSpan.textContent = email;
+    }
+    
+    openModal('email-verification-modal');
+}
+
+async function resendVerificationEmail() {
+    try {
+        const user = firebase.auth().currentUser;
+        if (user) {
+            await user.sendEmailVerification();
+            showAuthSuccess('¡Email de verificación reenviado!');
+        }
+    } catch (error) {
+        showAuthError('Error al reenviar email');
+    }
+}
+
+function showLoading(button) {
+    button.disabled = true;
+    button.innerHTML = '<span class="auth-loading"></span> Procesando...';
+}
+
+function hideLoading(button, originalText) {
+    button.disabled = false;
+    button.innerHTML = originalText;
+}
+
+function showAuthSuccess(message) {
+    // Crear notificación de éxito
+    const notification = document.createElement('div');
+    notification.className = 'auth-success';
+    notification.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.remove();
+    }, 4000);
+}
+
+function showAuthError(message) {
+    // Crear notificación de error
+    const notification = document.createElement('div');
+    notification.className = 'auth-error';
+    notification.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.remove();
+    }, 5000);
+}
+
+function getAuthErrorMessage(errorCode) {
+    const errorMessages = {
+        'auth/user-not-found': 'No existe una cuenta con este email',
+        'auth/wrong-password': 'Contraseña incorrecta',
+        'auth/email-already-in-use': 'Ya existe una cuenta con este email',
+        'auth/weak-password': 'La contraseña es muy débil',
+        'auth/invalid-email': 'Email inválido',
+        'auth/user-disabled': 'Esta cuenta ha sido deshabilitada',
+        'auth/too-many-requests': 'Demasiados intentos. Intenta más tarde',
+        'auth/popup-closed-by-user': 'Ventana cerrada por el usuario',
+        'auth/cancelled-popup-request': 'Solicitud cancelada',
+        'auth/invalid-api-key': 'Configuración de Firebase inválida. Verifica tu API Key.',
+        'auth/project-not-found': 'Proyecto de Firebase no encontrado.'
+    };
+    
+    return errorMessages[errorCode] || `Error: ${errorCode || 'Desconocido'}. Intenta nuevamente.`;
+}
+
+// Funciones del perfil de usuario
+function showUserOrders() {
+    console.log('Mostrar vehículos del usuario');
+    // Aquí puedes agregar la lógica para mostrar los vehículos
+}
+
+function showUserSettings() {
+    console.log('Mostrar configuración');
+    // Aquí puedes agregar la lógica para mostrar configuración
 }
 
 // ===== NAVEGACIÓN =====
@@ -2227,5 +2681,138 @@ window.processYapePayment = processYapePayment;
 window.generateCashTicket = generateCashTicket;
 window.printTicket = printTicket;
 window.downloadTicket = downloadTicket;
+
+// Funciones de autenticación
+window.loginWithGoogle = loginWithGoogle;
+window.registerWithGoogle = registerWithGoogle;
+window.logout = logout;
+window.togglePassword = togglePassword;
+window.toggleUserMenu = toggleUserMenu;
+window.resendVerificationEmail = resendVerificationEmail;
+window.showUserProfile = showUserProfile;
+window.showUserOrders = showUserOrders;
+window.showUserSettings = showUserSettings;
+
+// ===== LANDING PAGE AUTHENTICATION =====
+
+function switchLandingView(view) {
+    const loginView = document.getElementById('landing-login-view');
+    const registerView = document.getElementById('landing-register-view');
+    
+    if (view === 'login') {
+        loginView.style.display = 'block';
+        registerView.style.display = 'none';
+    } else {
+        loginView.style.display = 'none';
+        registerView.style.display = 'block';
+    }
+}
+
+async function handleLandingLogin(e) {
+    e.preventDefault();
+    
+    const email = document.getElementById('landing-login-email').value;
+    const password = document.getElementById('landing-login-password').value;
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    
+    try {
+        showLoading(submitBtn);
+        
+        if (isDemoMode) {
+            // Simular login exitoso
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            const mockUser = {
+                uid: 'demo-user-123',
+                email: email,
+                displayName: email.split('@')[0],
+                photoURL: null,
+                emailVerified: true
+            };
+            sessionStorage.setItem('demoUser', JSON.stringify(mockUser));
+            
+            // Forzar recarga de estado
+            location.reload();
+            return;
+        }
+
+        await firebase.auth().signInWithEmailAndPassword(email, password);
+        
+        showAuthSuccess('¡Bienvenido de vuelta!');
+        
+    } catch (error) {
+        console.error('Login error:', error);
+        showAuthError(getAuthErrorMessage(error.code));
+    } finally {
+        hideLoading(submitBtn, 'Iniciar Sesión');
+    }
+}
+
+async function handleLandingRegister(e) {
+    e.preventDefault();
+    
+    const name = document.getElementById('landing-register-name').value;
+    const email = document.getElementById('landing-register-email').value;
+    const password = document.getElementById('landing-register-password').value;
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    
+    try {
+        showLoading(submitBtn);
+        
+        if (isDemoMode) {
+            // Simular registro exitoso
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            const mockUser = {
+                uid: 'demo-user-123',
+                email: email,
+                displayName: name,
+                photoURL: null,
+                emailVerified: true
+            };
+            sessionStorage.setItem('demoUser', JSON.stringify(mockUser));
+            
+            showAuthSuccess('¡Cuenta creada exitosamente (Modo Demo)!');
+            
+            // Forzar recarga de estado
+            setTimeout(() => location.reload(), 1500);
+            return;
+        }
+
+        // Crear usuario
+        const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
+        const user = userCredential.user;
+        
+        // Actualizar perfil
+        await user.updateProfile({
+            displayName: name
+        });
+        
+        // Guardar datos adicionales en Firestore
+        await firebase.firestore().collection('users').doc(user.uid).set({
+            firstName: name.split(' ')[0],
+            lastName: name.split(' ').slice(1).join(' '),
+            email: email,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            newsletter: false
+        });
+        
+        // Enviar email de verificación
+        await user.sendEmailVerification({
+            url: window.location.origin,
+            handleCodeInApp: false
+        });
+        
+        showAuthSuccess('¡Cuenta creada exitosamente! Revisa tu email.');
+        
+    } catch (error) {
+        showAuthError(getAuthErrorMessage(error.code));
+    } finally {
+        hideLoading(submitBtn, 'Registrarse');
+    }
+}
+
+// Expose landing functions
+window.switchLandingView = switchLandingView;
+window.handleLandingLogin = handleLandingLogin;
+window.handleLandingRegister = handleLandingRegister;
 
 console.log('🚗 AutoXpert JavaScript cargado correctamente');

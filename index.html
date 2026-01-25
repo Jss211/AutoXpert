@@ -9,6 +9,19 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Firebase SDK (Modular) -->
+    <script type="importmap">
+    {
+        "imports": {
+            "firebase/app": "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js",
+            "firebase/auth": "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js",
+            "firebase/firestore": "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js",
+            "firebase/analytics": "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js"
+        }
+    }
+    </script>
+    
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -23,7 +36,113 @@
         </div>
     </div>
 
-    <!-- Navigation -->
+    <!-- Auth Landing Section (New) -->
+    <section id="auth-landing" class="auth-landing">
+        <div class="auth-card-container">
+            <div class="auth-card">
+                <div class="auth-card-header">
+                    <div class="auth-card-logo">
+                        <i class="fas fa-car"></i>
+                    </div>
+                    <h1>AutoXpert</h1>
+                    <p>Gestor de Vehículos de Lujo</p>
+                </div>
+
+                <!-- Login View (Default) -->
+                <div id="landing-login-view">
+                    <div class="social-auth-buttons">
+                        <button class="btn-social-auth google" onclick="loginWithGoogle()">
+                            <i class="fab fa-google"></i> Continuar con Google
+                        </button>
+                    </div>
+
+                    <div class="auth-divider-clean">
+                        <span>O continúa con email</span>
+                    </div>
+
+                    <form id="landing-login-form" onsubmit="handleLandingLogin(event)" autocomplete="off">
+                        <div class="form-group-clean">
+                            <label>Email</label>
+                            <input type="email" id="landing-login-email" placeholder="tu@email.com" required autocomplete="email">
+                        </div>
+                        <div class="form-group-clean">
+                            <label>Contraseña</label>
+                            <input type="password" id="landing-login-password" placeholder="........" required autocomplete="current-password">
+                        </div>
+                        <button type="submit" class="btn-auth-submit">Iniciar Sesión</button>
+                    </form>
+
+                    <div class="auth-card-footer">
+                        <a href="#" class="forgot-link" onclick="switchLandingView('forgot-password')">¿Olvidaste tu contraseña?</a>
+                        <p class="register-link">¿No tienes cuenta? <a href="#" onclick="switchLandingView('register')">Crear cuenta</a></p>
+                    </div>
+                </div>
+
+                <!-- Register View (Hidden) -->
+                <div id="landing-register-view" style="display: none;">
+                    <div class="social-auth-buttons">
+                        <button class="btn-social-auth google" onclick="registerWithGoogle()">
+                            <i class="fab fa-google"></i> Regístrate con Google
+                        </button>
+                    </div>
+
+                    <div class="auth-divider-clean">
+                        <span>O regístrate con email</span>
+                    </div>
+
+                    <form id="landing-register-form" onsubmit="handleLandingRegister(event)" autocomplete="off">
+                        <div class="form-group-clean">
+                            <label>Nombre Completo</label>
+                            <input type="text" id="landing-register-name" placeholder="Tu nombre" required autocomplete="name">
+                        </div>
+                        <div class="form-group-clean">
+                            <label>Email</label>
+                            <input type="email" id="landing-register-email" placeholder="tu@email.com" required autocomplete="new-email">
+                        </div>
+                        <div class="form-group-clean">
+                            <label>Contraseña</label>
+                            <input type="password" id="landing-register-password" placeholder="........" required autocomplete="new-password">
+                        </div>
+                        <div class="form-group-clean">
+                            <label>Confirmar contraseña</label>
+                            <input type="password" id="landing-register-confirm-password" placeholder="........" required autocomplete="new-password">
+                        </div>
+                        <button type="submit" class="btn-auth-submit">Crear Cuenta</button>
+                    </form>
+
+                    <div class="auth-card-footer">
+                        <p class="register-link">¿Ya tienes cuenta? <a href="#" onclick="switchLandingView('login')">Inicia sesión</a></p>
+                    </div>
+                </div>
+
+                <!-- Forgot Password View (Hidden) -->
+                <div id="landing-forgot-password-view" style="display: none;">
+                    <h2 class="auth-view-title">Recuperar Contraseña</h2>
+                    <p class="auth-view-subtitle">Ingresa tu email y te enviaremos instrucciones</p>
+                    
+                    <form id="landing-forgot-form" onsubmit="handleLandingForgotPassword(event)">
+                        <div class="form-group-clean">
+                            <label>Email</label>
+                            <input type="email" id="landing-forgot-email" placeholder="tu@email.com" required>
+                        </div>
+                        <button type="submit" class="btn-auth-submit">Enviar Instrucciones</button>
+                    </form>
+
+                    <div class="auth-card-footer">
+                        <a href="#" class="forgot-link" onclick="switchLandingView('login')">Volver al inicio de sesión</a>
+                    </div>
+                </div>
+                
+                <div class="auth-system-footer">
+                    Sistema de gestión de inventario automotriz
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main App Content (Hidden initially) -->
+    <div id="main-app" style="display: none;">
+
     <nav class="navbar" id="navbar">
         <div class="nav-container">
             <div class="nav-logo">
@@ -44,6 +163,24 @@
                 <button class="theme-toggle" id="theme-toggle" aria-label="Cambiar tema">
                     <i class="fas fa-sun"></i>
                 </button>
+                
+                <!-- Botones de autenticación (Solo visible si NO está logueado) -->
+                <div class="auth-buttons" id="auth-buttons">
+                    <button class="btn-auth btn-login" onclick="openModal('login-modal')">
+                        <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                    </button>
+                    <button class="btn-auth btn-register" onclick="openModal('register-modal')">
+                        <i class="fas fa-user-plus"></i> Registrarse
+                    </button>
+                </div>
+                
+                <!-- Botón Cerrar Sesión (Solo visible si ESTÁ logueado) -->
+                <div class="user-profile" id="user-profile" style="display: none;">
+                    <button class="btn-auth btn-logout" onclick="logout()" style="background: transparent; border: 1px solid var(--border-color); color: var(--text-primary); padding: 8px 15px; border-radius: 8px; cursor: pointer; transition: all 0.3s ease;">
+                        <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                    </button>
+                </div>
+                
                 <div class="hamburger" id="hamburger">
                     <span></span>
                     <span></span>
@@ -1173,6 +1310,238 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <!-- Modales de Autenticación -->
+    </div>
+
+    <!-- Modal de Login -->
+    <div id="login-modal" class="modal">
+        <div class="modal-content auth-modal-content">
+            <span class="close" onclick="closeModal('login-modal')">&times;</span>
+            <div class="auth-header">
+                <div class="auth-logo">
+                    <i class="fas fa-car"></i>
+                    <h2>Iniciar Sesión</h2>
+                </div>
+                <p>Accede a tu cuenta de AutoXpert</p>
+            </div>
+            
+            <div class="auth-body">
+                <!-- Login con Google -->
+                <button class="btn-google" onclick="loginWithGoogle()">
+                    <i class="fab fa-google"></i>
+                    Continuar con Google
+                </button>
+                
+                <div class="auth-divider">
+                    <span>o continúa con email</span>
+                </div>
+                
+                <!-- Formulario de Login -->
+                <form id="login-form" class="auth-form">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="login-email" placeholder="Correo electrónico" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="input-group">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="login-password" placeholder="Contraseña" required>
+                            <button type="button" class="toggle-password" onclick="togglePassword('login-password')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-options">
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="remember-me">
+                            <span class="checkmark"></span>
+                            Recordarme
+                        </label>
+                        <a href="#" onclick="openModal('forgot-password-modal'); closeModal('login-modal')">¿Olvidaste tu contraseña?</a>
+                    </div>
+                    
+                    <button type="submit" class="btn-auth-primary">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Iniciar Sesión
+                    </button>
+                </form>
+                
+                <div class="auth-footer">
+                    <p>¿No tienes cuenta? <a href="#" onclick="openModal('register-modal'); closeModal('login-modal')">Regístrate aquí</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Registro -->
+    <div id="register-modal" class="modal">
+        <div class="modal-content auth-modal-content">
+            <span class="close" onclick="closeModal('register-modal')">&times;</span>
+            <div class="auth-header">
+                <div class="auth-logo">
+                    <i class="fas fa-user-plus"></i>
+                    <h2>Crear Cuenta</h2>
+                </div>
+                <p>Únete a la familia AutoXpert</p>
+            </div>
+            
+            <div class="auth-body">
+                <!-- Registro con Google -->
+                <button class="btn-google" onclick="registerWithGoogle()">
+                    <i class="fab fa-google"></i>
+                    Registrarse con Google
+                </button>
+                
+                <div class="auth-divider">
+                    <span>o regístrate con email</span>
+                </div>
+                
+                <!-- Formulario de Registro -->
+                <form id="register-form" class="auth-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <i class="fas fa-user"></i>
+                                <input type="text" id="register-firstname" placeholder="Nombre" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <i class="fas fa-user"></i>
+                                <input type="text" id="register-lastname" placeholder="Apellido" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="input-group">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="register-email" placeholder="Correo electrónico" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="input-group">
+                            <i class="fas fa-phone"></i>
+                            <input type="tel" id="register-phone" placeholder="Teléfono (opcional)">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="input-group">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="register-password" placeholder="Contraseña" required>
+                            <button type="button" class="toggle-password" onclick="togglePassword('register-password')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="password-strength" id="password-strength"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="input-group">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="register-confirm-password" placeholder="Confirmar contraseña" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-options">
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="accept-terms" required>
+                            <span class="checkmark"></span>
+                            Acepto los <a href="#" onclick="openModal('termsModal')">Términos y Condiciones</a>
+                        </label>
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="accept-newsletter">
+                            <span class="checkmark"></span>
+                            Quiero recibir ofertas y novedades por email
+                        </label>
+                    </div>
+                    
+                    <button type="submit" class="btn-auth-primary">
+                        <i class="fas fa-user-plus"></i>
+                        Crear Cuenta
+                    </button>
+                </form>
+                
+                <div class="auth-footer">
+                    <p>¿Ya tienes cuenta? <a href="#" onclick="openModal('login-modal'); closeModal('register-modal')">Inicia sesión aquí</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Recuperar Contraseña -->
+    <div id="forgot-password-modal" class="modal">
+        <div class="modal-content auth-modal-content">
+            <span class="close" onclick="closeModal('forgot-password-modal')">&times;</span>
+            <div class="auth-header">
+                <div class="auth-logo">
+                    <i class="fas fa-key"></i>
+                    <h2>Recuperar Contraseña</h2>
+                </div>
+                <p>Te enviaremos un enlace para restablecer tu contraseña</p>
+            </div>
+            
+            <div class="auth-body">
+                <form id="forgot-password-form" class="auth-form">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="forgot-email" placeholder="Correo electrónico" required>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn-auth-primary">
+                        <i class="fas fa-paper-plane"></i>
+                        Enviar Enlace
+                    </button>
+                </form>
+                
+                <div class="auth-footer">
+                    <p><a href="#" onclick="openModal('login-modal'); closeModal('forgot-password-modal')">← Volver al login</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Verificación de Email -->
+    <div id="email-verification-modal" class="modal">
+        <div class="modal-content auth-modal-content">
+            <div class="auth-header">
+                <div class="auth-logo">
+                    <i class="fas fa-envelope-check"></i>
+                    <h2>Verifica tu Email</h2>
+                </div>
+                <p>Te hemos enviado un enlace de verificación</p>
+            </div>
+            
+            <div class="auth-body">
+                <div class="verification-message">
+                    <i class="fas fa-envelope-open-text"></i>
+                    <h3>¡Revisa tu bandeja de entrada!</h3>
+                    <p>Hemos enviado un enlace de verificación a <strong id="verification-email"></strong></p>
+                    <p>Haz clic en el enlace para activar tu cuenta.</p>
+                </div>
+                
+                <div class="verification-actions">
+                    <button class="btn-auth-secondary" onclick="resendVerificationEmail()">
+                        <i class="fas fa-redo"></i>
+                        Reenviar Email
+                    </button>
+                    <button class="btn-auth-primary" onclick="closeModal('email-verification-modal')">
+                        <i class="fas fa-check"></i>
+                        Entendido
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="script.js"></script>
 </body>
 </html>
