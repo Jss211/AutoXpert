@@ -8,43 +8,75 @@ let currentUser = null;
 // ===== CONFIGURACIÓN DE FIREBASE =====
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut, onAuthStateChanged, updateProfile, sendEmailVerification } from "firebase/auth";
+import { getFirestore, collection, doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { getAnalytics } from "firebase/analytics";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyAbdBuXv-ng53R5Aff0_HcP1Q9JelWzZvg",
+    apiKey: "AIzaSyAbdBUxV-ng53R5Aff0_HcP1Q9JelWzZvg",
     authDomain: "autoxpert-e3d12.firebaseapp.com",
     projectId: "autoxpert-e3d12",
     storageBucket: "autoxpert-e3d12.firebasestorage.app",
-    messagingSenderId: "9964639787711",
-    appId: "1:9964639787711:web:4f7cea4c811f7e510f92e6",
+    messagingSenderId: "996463978771",
+    appId: "1:996463978771:web:4f7cea4c811f7e510f92e6",
     measurementId: "G-BCJXM576VH"
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
+let app, auth, db, analytics, googleProvider;
 
-// Initialize Firebase Authentication and get a reference to the service
-const auth = getAuth(app);
-const googleProvider = new GoogleAuthProvider();
-googleProvider.addScope('email');
-googleProvider.addScope('profile');
-
-// Initialize Cloud Firestore and get a reference to the service
-const db = getFirestore(app);
-
-// Initialize Analytics
-const analytics = getAnalytics(app);
+try {
+    app = initializeApp(firebaseConfig);
+    
+    // Initialize Firebase Authentication and get a reference to the service
+    auth = getAuth(app);
+    googleProvider = new GoogleAuthProvider();
+    googleProvider.addScope('email');
+    googleProvider.addScope('profile');
+    
+    // Initialize Cloud Firestore and get a reference to the service
+    db = getFirestore(app);
+    
+    // Initialize Analytics (puede fallar si la API key no es válida)
+    try {
+        analytics = getAnalytics(app);
+    } catch (analyticsError) {
+        console.warn('Analytics no se pudo inicializar:', analyticsError);
+        // No bloqueamos la app si Analytics falla
+    }
+    
+    console.log('✅ Firebase inicializado correctamente');
+} catch (firebaseError) {
+    console.error('❌ Error al inicializar Firebase:', firebaseError);
+    // Mostrar mensaje al usuario
+    setTimeout(() => {
+        if (typeof showAuthError === 'function') {
+            showAuthError('Error de configuración de Firebase. Verifica tu API key en Firebase Console.');
+        } else {
+            alert('Error de configuración de Firebase. Por favor, verifica tu API key en Firebase Console.');
+        }
+    }, 1000);
+}
 
 // Detectar si estamos en modo demo (sin configuración real)
 const isDemoMode = false; // Ahora tenemos Firebase real configurado
 
 // ===== INICIALIZACIÓN =====
 document.addEventListener('DOMContentLoaded', function() {
+    // Inicializar fondo animado del login
+    initializeAuthBackground();
+    
+    // Limpiar campos inmediatamente cuando el DOM esté listo
+    clearLoginFields();
+    
     initializeAppUI();
     initializeAuth();
+    
+    // Limpiar campos nuevamente después de que todo esté cargado
+    setTimeout(() => {
+        clearLoginFields();
+    }, 500);
 });
 
 function initializeAppUI() {
@@ -65,13 +97,98 @@ function initializeAppUI() {
     // Cargar datos del catálogo
     loadVehicleCatalog();
     
+    // Limpiar campos una vez más después de inicializar todo
+    setTimeout(() => {
+        clearLoginFields();
+    }, 200);
+    
     console.log('🚗 AutoXpert - Aplicación inicializada correctamente');
+}
+
+function clearLoginFields() {
+    // Limpiar campos de login en la landing page
+    const loginEmail = document.getElementById('landing-login-email');
+    const loginPassword = document.getElementById('landing-login-password');
+    
+    if (loginEmail) {
+        // Truco para evitar autocompletado: cambiar temporalmente el tipo
+        const originalType = loginEmail.type;
+        loginEmail.type = 'text';
+        
+        // Remover cualquier valor prellenado
+        loginEmail.value = '';
+        loginEmail.setAttribute('autocomplete', 'off');
+        loginEmail.removeAttribute('value');
+        
+        // Restaurar el tipo original
+        setTimeout(() => {
+            if (loginEmail) {
+                loginEmail.type = originalType;
+                loginEmail.setAttribute('autocomplete', 'new-password');
+            }
+        }, 50);
+        
+        // Agregar listener para prevenir autocompletado del navegador
+        const clearOnFocus = function() {
+            if (this.value && this.value.trim() !== '') {
+                this.value = '';
+            }
+        };
+        loginEmail.removeEventListener('focus', clearOnFocus);
+        loginEmail.addEventListener('focus', clearOnFocus);
+        
+        // Forzar limpieza múltiples veces para asegurar
+        [50, 100, 200, 300].forEach(delay => {
+            setTimeout(() => {
+                if (loginEmail && loginEmail.value) {
+                    loginEmail.value = '';
+                }
+            }, delay);
+        });
+    }
+    
+    if (loginPassword) {
+        // Truco para evitar autocompletado: cambiar temporalmente el tipo
+        const originalType = loginPassword.type;
+        loginPassword.type = 'text';
+        
+        // Remover cualquier valor prellenado
+        loginPassword.value = '';
+        loginPassword.setAttribute('autocomplete', 'off');
+        loginPassword.removeAttribute('value');
+        
+        // Restaurar el tipo original
+        setTimeout(() => {
+            if (loginPassword) {
+                loginPassword.type = originalType;
+                loginPassword.setAttribute('autocomplete', 'new-password');
+            }
+        }, 50);
+        
+        // Agregar listener para prevenir autocompletado del navegador
+        const clearOnFocus = function() {
+            if (this.value && this.value.trim() !== '') {
+                this.value = '';
+            }
+        };
+        loginPassword.removeEventListener('focus', clearOnFocus);
+        loginPassword.addEventListener('focus', clearOnFocus);
+        
+        // Forzar limpieza múltiples veces para asegurar
+        [50, 100, 200, 300].forEach(delay => {
+            setTimeout(() => {
+                if (loginPassword && loginPassword.value) {
+                    loginPassword.value = '';
+                }
+            }, delay);
+        });
+    }
 }
 
 // ===== AUTENTICACIÓN =====
 function initializeAuth() {
     // Escuchar cambios en el estado de autenticación
-    auth.onAuthStateChanged((user) => {
+    onAuthStateChanged(auth, (user) => {
         const authLanding = document.getElementById('auth-landing');
         const mainApp = document.getElementById('main-app');
 
@@ -190,16 +307,10 @@ async function handleLogin(e) {
     try {
         showLoading(submitBtn);
         
-        const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
         
         showAuthSuccess('¡Bienvenido de vuelta!');
         closeModal('login-modal');
-        
-        // Guardar preferencia de recordar
-        const rememberMe = document.getElementById('remember-me').checked;
-        if (rememberMe) {
-            await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
-        }
         
     } catch (error) {
         showAuthError(getAuthErrorMessage(error.code));
@@ -234,28 +345,27 @@ async function handleRegister(e) {
         showLoading(submitBtn);
         
         // Crear usuario
-        const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
         
         // Actualizar perfil
-        await user.updateProfile({
+        await updateProfile(user, {
             displayName: `${firstName} ${lastName}`
         });
         
         // Guardar datos adicionales en Firestore
-        await firebase.firestore().collection('users').doc(user.uid).set({
+        await setDoc(doc(db, 'users', user.uid), {
             firstName: firstName,
             lastName: lastName,
             email: email,
             phone: phone,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            createdAt: serverTimestamp(),
             newsletter: document.getElementById('accept-newsletter').checked
         });
         
         // Enviar email de verificación
-        await user.sendEmailVerification({
-            url: window.location.origin,
-            handleCodeInApp: false
+        await sendEmailVerification(user, {
+            url: window.location.origin
         });
         
         showAuthSuccess('¡Cuenta creada exitosamente! Revisa tu email para verificar tu cuenta.');
@@ -278,7 +388,7 @@ async function handleForgotPassword(e) {
     try {
         showLoading(submitBtn);
         
-        await firebase.auth().sendPasswordResetEmail(email);
+        await sendPasswordResetEmail(auth, email);
         
         showAuthSuccess('¡Enlace enviado! Revisa tu email para restablecer tu contraseña.');
         closeModal('forgot-password-modal');
@@ -307,19 +417,39 @@ async function loginWithGoogle() {
             return;
         }
 
-        const result = await firebase.auth().signInWithPopup(googleProvider);
+        // Verificar que Firebase esté correctamente inicializado
+        if (!auth || !googleProvider) {
+            const errorMsg = 'Firebase no está correctamente configurado. Por favor:\n\n' +
+                           '1. Ve a Firebase Console (https://console.firebase.google.com/)\n' +
+                           '2. Selecciona tu proyecto\n' +
+                           '3. Ve a Configuración del proyecto\n' +
+                           '4. Verifica que la API key sea correcta\n' +
+                           '5. Asegúrate de que Google Authentication esté habilitado';
+            showAuthError(errorMsg);
+            console.error('Firebase no inicializado:', { auth, googleProvider });
+            return;
+        }
+
+        const result = await signInWithPopup(auth, googleProvider);
         const user = result.user;
         
         // Si es un nuevo usuario, guardar datos en Firestore
-        if (result.additionalUserInfo.isNewUser) {
-            await firebase.firestore().collection('users').doc(user.uid).set({
-                firstName: user.displayName?.split(' ')[0] || '',
-                lastName: user.displayName?.split(' ').slice(1).join(' ') || '',
-                email: user.email,
-                photoURL: user.photoURL,
-                provider: 'google',
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            });
+        if (result._tokenResponse?.isNewUser) {
+            try {
+                if (db) {
+                    await setDoc(doc(db, 'users', user.uid), {
+                        firstName: user.displayName?.split(' ')[0] || '',
+                        lastName: user.displayName?.split(' ').slice(1).join(' ') || '',
+                        email: user.email,
+                        photoURL: user.photoURL,
+                        provider: 'google',
+                        createdAt: serverTimestamp()
+                    });
+                }
+            } catch (firestoreError) {
+                console.warn('Error al guardar en Firestore:', firestoreError);
+                // No bloqueamos el login si falla guardar en Firestore
+            }
         }
         
         showAuthSuccess('¡Bienvenido!');
@@ -328,7 +458,44 @@ async function loginWithGoogle() {
         
     } catch (error) {
         console.error('Google Auth Error:', error);
-        showAuthError(getAuthErrorMessage(error.code));
+        
+        // Mensajes de error más específicos y útiles
+        let errorMessage = 'Error al iniciar sesión con Google';
+        
+        if (error.code === 'auth/popup-closed-by-user') {
+            errorMessage = 'Ventana de Google cerrada. Intenta nuevamente.';
+        } else if (error.code === 'auth/cancelled-popup-request') {
+            errorMessage = 'Solicitud cancelada. Intenta nuevamente.';
+        } else if (error.code === 'auth/popup-blocked') {
+            errorMessage = 'Ventana emergente bloqueada. Permite ventanas emergentes para este sitio.';
+        } else if (error.code === 'auth/unauthorized-domain') {
+            errorMessage = '⚠️ Dominio no autorizado para Google Auth\n\n' +
+                          'Solución:\n' +
+                          '1. Ve a Firebase Console: https://console.firebase.google.com/\n' +
+                          '2. Selecciona tu proyecto "autoxpert-e3d12"\n' +
+                          '3. Ve a Authentication > Settings\n' +
+                          '4. Baja hasta "Authorized domains"\n' +
+                          '5. Haz clic en "Add domain"\n' +
+                          '6. Agrega: 127.0.0.1\n' +
+                          '7. Si usas otro puerto, agrega: 127.0.0.1:puerto (ej: 127.0.0.1:3000)\n' +
+                          '8. Guarda y recarga esta página';
+        } else if (error.code === 'auth/api-key-not-valid' || 
+                   error.code === 'auth/invalid-api-key' ||
+                   error.message?.includes('API key not valid') ||
+                   error.message?.includes('API_KEY_INVALID')) {
+            errorMessage = '⚠️ API Key de Firebase inválida\n\n' +
+                          'Solución:\n' +
+                          '1. Ve a https://console.firebase.google.com/\n' +
+                          '2. Selecciona tu proyecto "autoxpert-e3d12"\n' +
+                          '3. Ve a ⚙️ Configuración del proyecto\n' +
+                          '4. Copia la API key correcta\n' +
+                          '5. Actualiza script.js línea 17\n' +
+                          '6. Asegúrate de que Google Auth esté habilitado en Authentication > Sign-in method';
+        } else {
+            errorMessage = getAuthErrorMessage(error.code) || error.message || 'Error desconocido al iniciar sesión con Google';
+        }
+        
+        showAuthError(errorMessage);
     }
 }
 
@@ -356,7 +523,7 @@ async function logout() {
             return;
         }
 
-        await firebase.auth().signOut();
+        await signOut(auth);
         showAuthSuccess('¡Hasta pronto!');
         
         // UI updates handled by onAuthStateChanged, but force reload to ensure clean state
@@ -426,9 +593,9 @@ function showEmailVerificationModal(email) {
 
 async function resendVerificationEmail() {
     try {
-        const user = firebase.auth().currentUser;
+        const user = auth.currentUser;
         if (user) {
-            await user.sendEmailVerification();
+            await sendEmailVerification(user);
             showAuthSuccess('¡Email de verificación reenviado!');
         }
     } catch (error) {
@@ -476,6 +643,7 @@ function getAuthErrorMessage(errorCode) {
     const errorMessages = {
         'auth/user-not-found': 'No existe una cuenta con este email',
         'auth/wrong-password': 'Contraseña incorrecta',
+        'auth/invalid-credential': 'Email o contraseña incorrectos. Verifica tus credenciales.',
         'auth/email-already-in-use': 'Ya existe una cuenta con este email',
         'auth/weak-password': 'La contraseña es muy débil',
         'auth/invalid-email': 'Email inválido',
@@ -483,8 +651,13 @@ function getAuthErrorMessage(errorCode) {
         'auth/too-many-requests': 'Demasiados intentos. Intenta más tarde',
         'auth/popup-closed-by-user': 'Ventana cerrada por el usuario',
         'auth/cancelled-popup-request': 'Solicitud cancelada',
-        'auth/invalid-api-key': 'Configuración de Firebase inválida. Verifica tu API Key.',
-        'auth/project-not-found': 'Proyecto de Firebase no encontrado.'
+        'auth/popup-blocked': 'Ventana emergente bloqueada. Permite ventanas emergentes para este sitio.',
+        'auth/unauthorized-domain': 'Este dominio no está autorizado. Agrega 127.0.0.1 en Firebase Console > Authentication > Settings > Authorized domains.',
+        'auth/invalid-api-key': 'Configuración de Firebase inválida. Verifica tu API Key en Firebase Console.',
+        'auth/api-key-not-valid': 'La API key de Firebase no es válida. Verifica la configuración en Firebase Console.',
+        'auth/project-not-found': 'Proyecto de Firebase no encontrado. Verifica tu configuración.',
+        'auth/network-request-failed': 'Error de conexión. Verifica tu internet.',
+        'auth/internal-error': 'Error interno. Intenta nuevamente más tarde.'
     };
     
     return errorMessages[errorCode] || `Error: ${errorCode || 'Desconocido'}. Intenta nuevamente.`;
@@ -1921,8 +2094,9 @@ window.addEventListener('load', () => {
 function openModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
-        // Asegurar que el modal esté limpio antes de abrir
+        // Resetear todos los estilos
         modal.style.opacity = '1';
+        modal.style.visibility = 'visible';
         modal.style.display = 'flex';
         
         // Usar requestAnimationFrame para mejor rendimiento
@@ -1936,32 +2110,24 @@ function openModal(modalId) {
 function closeModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
-        // Para el modal de detalles del vehículo, eliminarlo inmediatamente
-        if (modalId === 'vehicle-details-modal') {
-            modal.style.display = 'none';
-            document.body.style.overflow = 'auto';
-            modal.remove();
-            return;
-        }
-        
-        // Para modales de pago, cierre inmediato y limpio
-        if (modalId.includes('payment') || modalId === 'financing-modal' || modalId === 'ticket-modal') {
-            modal.classList.remove('show');
-            modal.style.opacity = '0';
-            setTimeout(() => {
-                modal.style.display = 'none';
-                document.body.style.overflow = 'auto';
-                modal.style.opacity = '1'; // Restaurar para próxima vez
-            }, 200);
-            return;
-        }
-        
-        // Para otros modales, usar animación normal
+        // Remover inmediatamente la clase show y ocultar el modal
         modal.classList.remove('show');
-        setTimeout(() => {
-            modal.style.display = 'none';
-            document.body.style.overflow = 'auto';
-        }, 300);
+        modal.style.display = 'none';
+        modal.style.opacity = '0';
+        modal.style.visibility = 'hidden';
+        
+        // Restaurar scroll en el body
+        document.body.style.overflow = '';
+        document.body.style.overflow = 'auto';
+        
+        // Para modales dinámicos (vehicle-details-modal), removerlos completamente del DOM
+        if (modalId === 'vehicle-details-modal') {
+            setTimeout(() => {
+                if (modal.parentNode) {
+                    modal.remove();
+                }
+            }, 0);
+        }
     }
 }
 
@@ -1969,9 +2135,16 @@ function closeModal(modalId) {
 function closeVehicleModal() {
     const modal = document.getElementById('vehicle-details-modal');
     if (modal) {
+        modal.classList.remove('show');
         modal.style.display = 'none';
+        modal.style.opacity = '0';
+        modal.style.visibility = 'hidden';
+        document.body.style.overflow = '';
         document.body.style.overflow = 'auto';
-        modal.remove();
+        // Remover del DOM inmediatamente
+        if (modal.parentNode) {
+            modal.remove();
+        }
     }
 }
 
@@ -1980,8 +2153,13 @@ function closeAllModals() {
     // Cerrar modal de detalles del vehículo específicamente
     const vehicleModal = document.getElementById('vehicle-details-modal');
     if (vehicleModal) {
+        vehicleModal.classList.remove('show');
         vehicleModal.style.display = 'none';
-        vehicleModal.remove();
+        vehicleModal.style.opacity = '0';
+        vehicleModal.style.visibility = 'hidden';
+        if (vehicleModal.parentNode) {
+            vehicleModal.remove();
+        }
     }
     
     // Cerrar todos los demás modales
@@ -1989,10 +2167,12 @@ function closeAllModals() {
     openModals.forEach(modal => {
         modal.classList.remove('show');
         modal.style.display = 'none';
-        modal.style.opacity = '1'; // Restaurar opacidad
+        modal.style.opacity = '0';
+        modal.style.visibility = 'hidden';
     });
     
     // Restaurar scroll del body
+    document.body.style.overflow = '';
     document.body.style.overflow = 'auto';
 }
 
@@ -2698,13 +2878,24 @@ window.showUserSettings = showUserSettings;
 function switchLandingView(view) {
     const loginView = document.getElementById('landing-login-view');
     const registerView = document.getElementById('landing-register-view');
+    const forgotPasswordView = document.getElementById('landing-forgot-password-view');
     
+    // Ocultar todas las vistas primero
+    if (loginView) loginView.style.display = 'none';
+    if (registerView) registerView.style.display = 'none';
+    if (forgotPasswordView) forgotPasswordView.style.display = 'none';
+    
+    // Mostrar la vista correspondiente
     if (view === 'login') {
-        loginView.style.display = 'block';
-        registerView.style.display = 'none';
-    } else {
-        loginView.style.display = 'none';
-        registerView.style.display = 'block';
+        if (loginView) {
+            loginView.style.display = 'block';
+            // Limpiar campos cuando se muestra la vista de login
+            setTimeout(() => clearLoginFields(), 50);
+        }
+    } else if (view === 'register') {
+        if (registerView) registerView.style.display = 'block';
+    } else if (view === 'forgot-password') {
+        if (forgotPasswordView) forgotPasswordView.style.display = 'block';
     }
 }
 
@@ -2735,13 +2926,27 @@ async function handleLandingLogin(e) {
             return;
         }
 
-        await firebase.auth().signInWithEmailAndPassword(email, password);
+        // Verificar que Firebase esté inicializado
+        if (!auth) {
+            showAuthError('Firebase no está configurado correctamente. Recarga la página.');
+            hideLoading(submitBtn, 'Iniciar Sesión');
+            return;
+        }
+
+        await signInWithEmailAndPassword(auth, email, password);
         
         showAuthSuccess('¡Bienvenido de vuelta!');
         
     } catch (error) {
         console.error('Login error:', error);
-        showAuthError(getAuthErrorMessage(error.code));
+        let errorMsg = getAuthErrorMessage(error.code);
+        
+        // Mensaje más específico para credenciales inválidas
+        if (error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found') {
+            errorMsg = 'Email o contraseña incorrectos. Verifica tus credenciales e intenta nuevamente.';
+        }
+        
+        showAuthError(errorMsg);
     } finally {
         hideLoading(submitBtn, 'Iniciar Sesión');
     }
@@ -2750,10 +2955,27 @@ async function handleLandingLogin(e) {
 async function handleLandingRegister(e) {
     e.preventDefault();
     
-    const name = document.getElementById('landing-register-name').value;
     const email = document.getElementById('landing-register-email').value;
     const password = document.getElementById('landing-register-password').value;
+    const confirmPassword = document.getElementById('landing-register-confirm-password').value;
     const submitBtn = e.target.querySelector('button[type="submit"]');
+    
+    // Validar que las contraseñas coincidan
+    if (password !== confirmPassword) {
+        showAuthError('Las contraseñas no coinciden');
+        return;
+    }
+    
+    if (password.length < 6) {
+        showAuthError('La contraseña debe tener al menos 6 caracteres');
+        return;
+    }
+    
+    // Validar email
+    if (!email || !email.includes('@')) {
+        showAuthError('Por favor, ingresa un email válido');
+        return;
+    }
     
     try {
         showLoading(submitBtn);
@@ -2764,7 +2986,7 @@ async function handleLandingRegister(e) {
             const mockUser = {
                 uid: 'demo-user-123',
                 email: email,
-                displayName: name,
+                displayName: email.split('@')[0],
                 photoURL: null,
                 emailVerified: true
             };
@@ -2777,36 +2999,106 @@ async function handleLandingRegister(e) {
             return;
         }
 
+        // Verificar que Firebase esté inicializado
+        if (!auth) {
+            showAuthError('Firebase no está configurado correctamente. Verifica tu API key en Firebase Console.');
+            hideLoading(submitBtn, 'Crear Cuenta');
+            return;
+        }
+
         // Crear usuario
-        const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
         
+        // Usar el email como nombre por defecto
+        const displayName = email.split('@')[0];
+        
         // Actualizar perfil
-        await user.updateProfile({
-            displayName: name
-        });
+        try {
+            await updateProfile(user, {
+                displayName: displayName
+            });
+        } catch (profileError) {
+            console.warn('Error al actualizar perfil:', profileError);
+            // No bloqueamos el registro si falla actualizar el perfil
+        }
         
         // Guardar datos adicionales en Firestore
-        await firebase.firestore().collection('users').doc(user.uid).set({
-            firstName: name.split(' ')[0],
-            lastName: name.split(' ').slice(1).join(' '),
-            email: email,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-            newsletter: false
-        });
+        try {
+            if (db) {
+                await setDoc(doc(db, 'users', user.uid), {
+                    firstName: displayName,
+                    lastName: '',
+                    email: email,
+                    createdAt: serverTimestamp(),
+                    newsletter: false
+                });
+            }
+        } catch (firestoreError) {
+            console.warn('Error al guardar en Firestore:', firestoreError);
+            // No bloqueamos el registro si falla guardar en Firestore
+        }
         
         // Enviar email de verificación
-        await user.sendEmailVerification({
-            url: window.location.origin,
-            handleCodeInApp: false
-        });
+        try {
+            await sendEmailVerification(user, {
+                url: window.location.origin
+            });
+        } catch (emailError) {
+            console.warn('Error al enviar email de verificación:', emailError);
+            // No bloqueamos el registro si falla el email
+        }
         
-        showAuthSuccess('¡Cuenta creada exitosamente! Revisa tu email.');
+        showAuthSuccess('¡Cuenta creada exitosamente! Revisa tu email para verificar tu cuenta.');
         
     } catch (error) {
+        console.error('Register error:', error);
+        let errorMsg = getAuthErrorMessage(error.code);
+        
+        // Mensaje más específico para errores de API key
+        if (error.code === 'auth/api-key-not-valid' || 
+            error.code === 'auth/invalid-api-key' ||
+            error.message?.includes('API key not valid')) {
+            errorMsg = '⚠️ API Key de Firebase inválida\n\n' +
+                      'Solución:\n' +
+                      '1. Ve a https://console.firebase.google.com/\n' +
+                      '2. Selecciona tu proyecto\n' +
+                      '3. Ve a ⚙️ Configuración del proyecto\n' +
+                      '4. Copia la API key correcta\n' +
+                      '5. Actualiza script.js línea 17';
+        }
+        
+        showAuthError(errorMsg || 'Error al crear la cuenta. Intenta nuevamente.');
+    } finally {
+        hideLoading(submitBtn, 'Crear Cuenta');
+    }
+}
+
+async function handleLandingForgotPassword(e) {
+    e.preventDefault();
+    
+    const email = document.getElementById('landing-forgot-email').value;
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    
+    try {
+        showLoading(submitBtn);
+        
+        if (isDemoMode) {
+            // Simular envío exitoso
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            showAuthSuccess('¡Enlace enviado (Modo Demo)! Revisa tu email.');
+            return;
+        }
+        
+        await sendPasswordResetEmail(auth, email);
+        
+        showAuthSuccess('¡Enlace enviado! Revisa tu email para restablecer tu contraseña.');
+        
+    } catch (error) {
+        console.error('Forgot password error:', error);
         showAuthError(getAuthErrorMessage(error.code));
     } finally {
-        hideLoading(submitBtn, 'Registrarse');
+        hideLoading(submitBtn, 'Enviar Instrucciones');
     }
 }
 
@@ -2814,5 +3106,181 @@ async function handleLandingRegister(e) {
 window.switchLandingView = switchLandingView;
 window.handleLandingLogin = handleLandingLogin;
 window.handleLandingRegister = handleLandingRegister;
+window.handleLandingForgotPassword = handleLandingForgotPassword;
+
+// ===== FONDO ANIMADO DE LOGIN =====
+class AuthBackgroundAnimation {
+    constructor() {
+        this.canvas = document.getElementById('authBackgroundCanvas');
+        if (!this.canvas) return;
+        
+        this.ctx = this.canvas.getContext('2d');
+        this.particles = [];
+        this.meshPoints = [];
+        this.animationId = null;
+        this.mouseX = 0;
+        this.mouseY = 0;
+        
+        this.resizeCanvas();
+        this.initializeParticles();
+        this.initializeMeshPoints();
+        this.animate();
+        
+        window.addEventListener('resize', () => this.resizeCanvas());
+        document.addEventListener('mousemove', (e) => {
+            this.mouseX = e.clientX;
+            this.mouseY = e.clientY;
+        });
+    }
+    
+    resizeCanvas() {
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+    }
+    
+    initializeParticles() {
+        this.particles = [];
+        const particleCount = Math.floor((this.canvas.width * this.canvas.height) / 10000);
+        
+        for (let i = 0; i < particleCount; i++) {
+            this.particles.push({
+                x: Math.random() * this.canvas.width,
+                y: Math.random() * this.canvas.height,
+                vx: (Math.random() - 0.5) * 0.5,
+                vy: (Math.random() - 0.5) * 0.5,
+                size: Math.random() * 1.5 + 0.5,
+                opacity: Math.random() * 0.5 + 0.2,
+                color: `rgba(255, 255, 255, ${Math.random() * 0.5 + 0.1})`
+            });
+        }
+    }
+    
+    initializeMeshPoints() {
+        this.meshPoints = [];
+        const cols = 8;
+        const rows = 6;
+        const cellW = this.canvas.width / cols;
+        const cellH = this.canvas.height / rows;
+        
+        for (let i = 0; i < cols; i++) {
+            for (let j = 0; j < rows; j++) {
+                this.meshPoints.push({
+                    x: i * cellW + cellW / 2,
+                    y: j * cellH + cellH / 2,
+                    baseX: i * cellW + cellW / 2,
+                    baseY: j * cellH + cellH / 2,
+                    vx: 0,
+                    vy: 0
+                });
+            }
+        }
+    }
+    
+    
+    updateParticles() {
+        this.particles.forEach(p => {
+            p.x += p.vx;
+            p.y += p.vy;
+            
+            // Rebote en límites
+            if (p.x < 0 || p.x > this.canvas.width) p.vx *= -1;
+            if (p.y < 0 || p.y > this.canvas.height) p.vy *= -1;
+            
+            // Mantener dentro del canvas
+            p.x = Math.max(0, Math.min(this.canvas.width, p.x));
+            p.y = Math.max(0, Math.min(this.canvas.height, p.y));
+        });
+    }
+    
+    updateMeshPoints() {
+        const moveStrength = 20;
+        
+        this.meshPoints.forEach(point => {
+            const dx = this.mouseX - point.x;
+            const dy = this.mouseY - point.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            if (distance < 200) {
+                const angle = Math.atan2(dy, dx);
+                const force = (200 - distance) / 200;
+                point.vx -= Math.cos(angle) * force * moveStrength;
+                point.vy -= Math.sin(angle) * force * moveStrength;
+            }
+            
+            // Damping
+            point.vx *= 0.95;
+            point.vy *= 0.95;
+            
+            point.x += point.vx;
+            point.y += point.vy;
+            
+            // Volver al punto base lentamente
+            point.x += (point.baseX - point.x) * 0.02;
+            point.y += (point.baseY - point.y) * 0.02;
+        });
+    }
+    
+    
+    drawMesh() {
+        const cols = 8;
+        const rows = 6;
+        
+        this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+        this.ctx.lineWidth = 1;
+        
+        for (let i = 0; i < cols - 1; i++) {
+            for (let j = 0; j < rows - 1; j++) {
+                const p1 = this.meshPoints[i * rows + j];
+                const p2 = this.meshPoints[(i + 1) * rows + j];
+                const p3 = this.meshPoints[i * rows + (j + 1)];
+                
+                if (p1 && p2) {
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(p1.x, p1.y);
+                    this.ctx.lineTo(p2.x, p2.y);
+                    this.ctx.stroke();
+                }
+                
+                if (p1 && p3) {
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(p1.x, p1.y);
+                    this.ctx.lineTo(p3.x, p3.y);
+                    this.ctx.stroke();
+                }
+            }
+        }
+    }
+    
+    drawParticles() {
+        this.particles.forEach(p => {
+            this.ctx.fillStyle = p.color;
+            this.ctx.beginPath();
+            this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            this.ctx.fill();
+        });
+    }
+    
+    animate = () => {
+        // Limpiar canvas
+        this.ctx.fillStyle = 'rgba(8, 145, 178, 0.01)';
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        
+        // Actualizar y dibujar
+        this.updateMeshPoints();
+        this.drawMesh();
+        
+        this.updateParticles();
+        this.drawParticles();
+        
+        this.animationId = requestAnimationFrame(this.animate);
+    }
+}
+
+// Inicializar fondo animado
+function initializeAuthBackground() {
+    if (document.getElementById('authBackgroundCanvas')) {
+        new AuthBackgroundAnimation();
+    }
+}
 
 console.log('🚗 AutoXpert JavaScript cargado correctamente');

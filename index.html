@@ -38,6 +38,9 @@
 
     <!-- Auth Landing Section (New) -->
     <section id="auth-landing" class="auth-landing">
+        <!-- Canvas para fondo animado -->
+        <canvas id="authBackgroundCanvas" class="auth-background-canvas"></canvas>
+        
         <div class="auth-card-container">
             <div class="auth-card">
                 <div class="auth-card-header">
@@ -63,11 +66,11 @@
                     <form id="landing-login-form" onsubmit="handleLandingLogin(event)" autocomplete="off">
                         <div class="form-group-clean">
                             <label>Email</label>
-                            <input type="email" id="landing-login-email" placeholder="tu@email.com" required autocomplete="email">
+                            <input type="email" id="landing-login-email" name="login-email-autoxpert" placeholder="tu@email.com" required autocomplete="new-password" value="">
                         </div>
                         <div class="form-group-clean">
                             <label>Contraseña</label>
-                            <input type="password" id="landing-login-password" placeholder="........" required autocomplete="current-password">
+                            <input type="password" id="landing-login-password" name="login-password-autoxpert" placeholder="........" required autocomplete="new-password" value="">
                         </div>
                         <button type="submit" class="btn-auth-submit">Iniciar Sesión</button>
                     </form>
@@ -80,24 +83,12 @@
 
                 <!-- Register View (Hidden) -->
                 <div id="landing-register-view" style="display: none;">
-                    <div class="social-auth-buttons">
-                        <button class="btn-social-auth google" onclick="registerWithGoogle()">
-                            <i class="fab fa-google"></i> Regístrate con Google
-                        </button>
-                    </div>
-
-                    <div class="auth-divider-clean">
-                        <span>O regístrate con email</span>
-                    </div>
-
+                    <h2 class="auth-view-title">Crear Cuenta</h2>
+                    
                     <form id="landing-register-form" onsubmit="handleLandingRegister(event)" autocomplete="off">
                         <div class="form-group-clean">
-                            <label>Nombre Completo</label>
-                            <input type="text" id="landing-register-name" placeholder="Tu nombre" required autocomplete="name">
-                        </div>
-                        <div class="form-group-clean">
                             <label>Email</label>
-                            <input type="email" id="landing-register-email" placeholder="tu@email.com" required autocomplete="new-email">
+                            <input type="email" id="landing-register-email" placeholder="correo@ejemplo.com" required autocomplete="new-email">
                         </div>
                         <div class="form-group-clean">
                             <label>Contraseña</label>
@@ -583,13 +574,13 @@
 
     <!-- Modales -->
     <!-- Modal Términos de Servicio -->
-    <div id="termsModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
+    <div id="termsModal" class="modal legal-modal">
+        <div class="modal-content legal-modal-content">
+            <div class="modal-header legal-header">
                 <h2><i class="fas fa-file-contract"></i> Términos y Condiciones de AutoXpert</h2>
                 <span class="close" onclick="closeModal('termsModal')">&times;</span>
             </div>
-            <div class="modal-body">
+            <div class="legal-modal-body">
                 <div class="legal-content">
                     <h3>1. Aceptación de Términos</h3>
                     <p>Al utilizar nuestros servicios, usted acepta estos términos y condiciones en su totalidad.</p>
@@ -614,13 +605,13 @@
     </div>
 
     <!-- Modal Política de Privacidad -->
-    <div id="privacyModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
+    <div id="privacyModal" class="modal legal-modal">
+        <div class="modal-content legal-modal-content">
+            <div class="modal-header legal-header">
                 <h2><i class="fas fa-shield-alt"></i> Política de Privacidad de AutoXpert</h2>
                 <span class="close" onclick="closeModal('privacyModal')">&times;</span>
             </div>
-            <div class="modal-body">
+            <div class="legal-modal-body">
                 <div class="legal-content">
                     <h3>1. Recopilación de Información</h3>
                     <p>Recopilamos información personal necesaria para brindar nuestros servicios de manera efectiva.</p>
@@ -645,13 +636,13 @@
     </div>
 
     <!-- Modal Términos de Empresa -->
-    <div id="companyModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
+    <div id="companyModal" class="modal legal-modal">
+        <div class="modal-content legal-modal-content">
+            <div class="modal-header legal-header">
                 <h2><i class="fas fa-building"></i> Términos de Empresa AutoXpert</h2>
                 <span class="close" onclick="closeModal('companyModal')">&times;</span>
             </div>
-            <div class="modal-body">
+            <div class="legal-modal-body">
                 <div class="legal-content">
                     <h3>1. Información Corporativa</h3>
                     <p>AutoXpert es una empresa especializada en la venta y mantenimiento de vehículos de lujo, constituida bajo las leyes peruanas.</p>
@@ -1511,29 +1502,32 @@
 
     <!-- Modal de Verificación de Email -->
     <div id="email-verification-modal" class="modal">
-        <div class="modal-content auth-modal-content">
-            <div class="auth-header">
-                <div class="auth-logo">
-                    <i class="fas fa-envelope-check"></i>
-                    <h2>Verifica tu Email</h2>
+        <div class="modal-content verification-modal-content">
+            <span class="close" onclick="closeModal('email-verification-modal')">&times;</span>
+            <div class="verification-container">
+                <div class="verification-icon-wrapper">
+                    <div class="verification-icon-circle">
+                        <i class="fas fa-envelope-open-text"></i>
+                    </div>
                 </div>
-                <p>Te hemos enviado un enlace de verificación</p>
-            </div>
-            
-            <div class="auth-body">
-                <div class="verification-message">
-                    <i class="fas fa-envelope-open-text"></i>
-                    <h3>¡Revisa tu bandeja de entrada!</h3>
-                    <p>Hemos enviado un enlace de verificación a <strong id="verification-email"></strong></p>
-                    <p>Haz clic en el enlace para activar tu cuenta.</p>
+                <h2 class="verification-title">Verifica tu Email</h2>
+                <p class="verification-subtitle">Te hemos enviado un enlace de verificación</p>
+                
+                <div class="verification-message-box">
+                    <p class="verification-text">¡Revisa tu bandeja de entrada!</p>
+                    <p class="verification-email-text">
+                        Hemos enviado un enlace de verificación a<br>
+                        <strong id="verification-email" class="verification-email"></strong>
+                    </p>
+                    <p class="verification-instruction">Haz clic en el enlace para activar tu cuenta.</p>
                 </div>
                 
                 <div class="verification-actions">
-                    <button class="btn-auth-secondary" onclick="resendVerificationEmail()">
+                    <button class="btn-verification-secondary" onclick="resendVerificationEmail()">
                         <i class="fas fa-redo"></i>
                         Reenviar Email
                     </button>
-                    <button class="btn-auth-primary" onclick="closeModal('email-verification-modal')">
+                    <button class="btn-verification-primary" onclick="closeModal('email-verification-modal')">
                         <i class="fas fa-check"></i>
                         Entendido
                     </button>
