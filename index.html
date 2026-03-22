@@ -141,20 +141,22 @@
                 <span>AutoXpert</span>
             </div>
             
-            <ul class="nav-menu" id="nav-menu">
-                <li><a href="#inicio" class="nav-link">Inicio</a></li>
-                <li><a href="#catalogo" class="nav-link">Catálogo</a></li>
-                <li><a href="#talleres" class="nav-link">Talleres</a></li>
-                <li><a href="#equipo" class="nav-link">Nuestro Equipo</a></li>
-                <li><a href="#contacto" class="nav-link">Contacto</a></li>
-                <li><a href="#terminos" class="nav-link">Términos</a></li>
-            </ul>
-
-            <div class="nav-controls">
+            <div class="nav-main">
+                <ul class="nav-menu" id="nav-menu">
+                    <li><a href="#inicio" class="nav-link">Inicio</a></li>
+                    <li><a href="#catalogo" class="nav-link">Catálogo</a></li>
+                    <li><a href="#talleres" class="nav-link">Talleres</a></li>
+                    <li><a href="#equipo" class="nav-link">Nuestro Equipo</a></li>
+                    <li><a href="#contacto" class="nav-link">Contacto</a></li>
+                    <li><a href="#terminos" class="nav-link">Términos</a></li>
+                </ul>
                 <button class="theme-toggle" id="theme-toggle" aria-label="Cambiar tema">
-                    <i class="fas fa-sun"></i>
+                    <span class="theme-label">Modo Claro</span>
+                    <span class="theme-switch"></span>
                 </button>
-                
+            </div>
+
+            <div class="nav-actions">
                 <!-- Botones de autenticación (Solo visible si NO está logueado) -->
                 <div class="auth-buttons" id="auth-buttons">
                     <button class="btn-auth btn-login" onclick="openModal('login-modal')">
@@ -1041,7 +1043,7 @@
     <div id="financing-modal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal('financing-modal')">&times;</span>
-            <h2><i class="fas fa-credit-card"></i> Métodos de Pago</h2>
+            <h2>Métodos de Pago</h2>
             <div class="payment-methods">
                 <div class="payment-method" onclick="selectPaymentMethod('card')">
                     <div class="payment-icon">
@@ -1065,7 +1067,7 @@
     <div id="card-payment-modal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal('card-payment-modal')">&times;</span>
-            <h2><i class="fas fa-credit-card"></i> Pago con Tarjeta</h2>
+            <h2>Pago con Tarjeta</h2>
             <form class="payment-form" onsubmit="processCardPayment(event)">
                 <div class="form-group">
                     <label for="cardNumber">Número de Tarjeta:</label>

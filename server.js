@@ -209,14 +209,14 @@ function generateEmailHTML(formData) {
         <div class="email-container">
             <!-- Header -->
             <div class="header">
-                <div class="header-icon">🚗</div>
+                <div class="header-icon"></div>
                 <h1>AutoXpert</h1>
                 <p>La experiencia definitiva en vehículos de lujo</p>
             </div>
 
             <!-- Content -->
             <div class="content">
-                <div class="greeting">¡Hola Jordan! 👋</div>
+                <div class="greeting">¡Hola Jordan!</div>
                 
                 <div class="intro-text">
                     Has recibido un nuevo mensaje de contacto desde tu sitio web de <span class="highlight">AutoXpert</span>. Un cliente interesado se ha comunicado contigo con información detallada. Aquí están los detalles:
@@ -225,30 +225,30 @@ function generateEmailHTML(formData) {
                 <!-- Información del Cliente -->
                 <div class="info-section">
                     <div class="info-row">
-                        <div class="info-label">👤 Nombre:</div>
+                        <div class="info-label">Nombre:</div>
                         <div class="info-value"><strong>${formData.name}</strong></div>
                     </div>
                     <div class="info-row">
-                        <div class="info-label">✉️ Email:</div>
+                        <div class="info-label">Email:</div>
                         <div class="info-value"><strong>${formData.email}</strong></div>
                     </div>
                     <div class="info-row">
-                        <div class="info-label">📱 Teléfono:</div>
+                        <div class="info-label">Teléfono:</div>
                         <div class="info-value"><strong>${formData.countryCode} ${formData.phone}</strong></div>
                     </div>
                     <div class="info-row">
-                        <div class="info-label">🌍 País:</div>
+                        <div class="info-label">País:</div>
                         <div class="info-value"><strong>${countryName}</strong></div>
                     </div>
                     <div class="info-row">
-                        <div class="info-label">🎯 Interés:</div>
+                        <div class="info-label">Interés:</div>
                         <div class="info-value"><strong>${interestText}</strong></div>
                     </div>
                 </div>
 
                 <!-- Mensaje del Cliente -->
                 <div>
-                    <div class="message-label">💬 Mensaje del Cliente:</div>
+                    <div class="message-label">Mensaje del Cliente:</div>
                     <div class="message-section">
                         <div class="message-text">${formData.message}</div>
                     </div>
@@ -256,7 +256,7 @@ function generateEmailHTML(formData) {
 
                 <!-- CTA Section -->
                 <div class="cta-section">
-                    <div class="cta-text">📞 Responde pronto a este cliente para no perder esta oportunidad</div>
+                    <div class="cta-text">Responde pronto a este cliente para no perder esta oportunidad</div>
                     <a href="mailto:${formData.email}" class="cta-button">Responder al Cliente</a>
                 </div>
 
@@ -267,12 +267,12 @@ function generateEmailHTML(formData) {
 
             <!-- Footer -->
             <div class="footer">
-                <div class="footer-text"><strong>AutoXpert 🏎️</strong></div>
+                <div class="footer-text"><strong>AutoXpert</strong></div>
                 <div class="footer-text">La experiencia definitiva en vehículos de lujo</div>
                 <div class="footer-text">Teléfono: +51 986182856</div>
                 <div class="footer-text">Email: jordanpmrojasbazan@gmail.com</div>
                 <div class="footer-social">
-                    <a href="https://wa.me/51986182856" class="social-link">📱</a>
+                    <a href="https://wa.me/51986182856" class="social-link">WhatsApp</a>
                 </div>
                 <div class="footer-text" style="margin-top: 15px; font-size: 11px; color: #ccc;">
                     Este es un email automático del sistema de contacto de AutoXpert
@@ -307,7 +307,7 @@ app.post('/api/send-contact', async (req, res) => {
         const mailOptions = {
             from: process.env.EMAIL_USER,
             to: process.env.EMAIL_USER,
-            subject: `📩 Nuevo Mensaje de Contacto - ${name} (AutoXpert)`,
+            subject: `Nuevo Mensaje de Contacto - ${name} (AutoXpert)`,
             html: generateEmailHTML(formData),
             replyTo: email
         };
@@ -334,5 +334,5 @@ app.get('/test', (req, res) => {
 // Iniciar servidor
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`✅ Servidor AutoXpert corriendo en http://localhost:${PORT}`);
+    console.log(`Servidor AutoXpert corriendo en http://localhost:${PORT}`);
 });
