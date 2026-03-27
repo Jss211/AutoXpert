@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cross-Origin-Opener-Policy" content="unsafe-none">
+    <link rel="icon" href="data:,">
     <title>AutoXpert - Concesionaria de Lujo</title>
     <meta name="description" content="AutoXpert - La mejor concesionaria de vehículos de lujo. Lamborghini, Ferrari, Suzuki y más marcas premium.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -70,7 +72,12 @@
                         </div>
                         <div class="form-group-clean">
                             <label>Contraseña</label>
-                            <input type="password" id="landing-login-password" name="login-password-autoxpert" placeholder="........" required autocomplete="new-password" value="">
+                            <div class="password-input-wrapper">
+                                <input type="password" id="landing-login-password" name="login-password-autoxpert" placeholder="........" required autocomplete="new-password" value="">
+                                <button type="button" class="password-toggle" onclick="togglePasswordVisibility('landing-login-password')">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
                         </div>
                         <button type="submit" class="btn-auth-submit">Iniciar Sesión</button>
                     </form>
@@ -92,11 +99,21 @@
                         </div>
                         <div class="form-group-clean">
                             <label>Contraseña</label>
-                            <input type="password" id="landing-register-password" placeholder="........" required autocomplete="new-password">
+                            <div class="password-input-wrapper">
+                                <input type="password" id="landing-register-password" placeholder="........" required autocomplete="new-password">
+                                <button type="button" class="password-toggle" onclick="togglePasswordVisibility('landing-register-password')">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
                         </div>
                         <div class="form-group-clean">
                             <label>Confirmar contraseña</label>
-                            <input type="password" id="landing-register-confirm-password" placeholder="........" required autocomplete="new-password">
+                            <div class="password-input-wrapper">
+                                <input type="password" id="landing-register-confirm-password" placeholder="........" required autocomplete="new-password">
+                                <button type="button" class="password-toggle" onclick="togglePasswordVisibility('landing-register-confirm-password')">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
                         </div>
                         <button type="submit" class="btn-auth-submit">Crear Cuenta</button>
                     </form>
@@ -109,7 +126,6 @@
                 <!-- Forgot Password View (Hidden) -->
                 <div id="landing-forgot-password-view" style="display: none;">
                     <h2 class="auth-view-title">Recuperar Contraseña</h2>
-                    <p class="auth-view-subtitle">Ingresa tu email y te enviaremos instrucciones</p>
                     
                     <form id="landing-forgot-form" onsubmit="handleLandingForgotPassword(event)">
                         <div class="form-group-clean">
@@ -326,7 +342,7 @@
                         <li>Proceso rápido</li>
                     </ul>
                     <div class="workshop-actions">
-                        <button class="btn-primary" onclick="openFinancingModal(vehicle.name, vehicle.price)">Comprar Ahora</button>
+                        <button class="btn-primary" onclick="openModal('financingModal')">Comprar Ahora</button>
                         <button class="btn-secondary" onclick="openModal('financingInfoModal')">Más Información</button>
                     </div>
                 </div>

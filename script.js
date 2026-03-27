@@ -9,7 +9,7 @@ let currentUser = null;
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut, onAuthStateChanged, updateProfile, sendEmailVerification } from "firebase/auth";
-import { getFirestore, collection, doc, setDoc, serverTimestamp } from "firebase/firestore";
+import { getFirestore, collection, doc, setDoc, getDoc, serverTimestamp } from "firebase/firestore";
 import { getAnalytics } from "firebase/analytics";
 
 // Your web app's Firebase configuration
@@ -430,13 +430,39 @@ async function loginWithGoogle() {
             return;
         }
 
+        // Siempre mostrar el selector de cuentas de Google
+        googleProvider.setCustomParameters({ prompt: 'select_account' });
+        
         const result = await signInWithPopup(auth, googleProvider);
         const user = result.user;
         
-        // Si es un nuevo usuario, guardar datos en Firestore
+        // Verificar si el usuario está registrado en Firestore
+        let userExists = false;
+        try {
+            if (db) {
+                const userDocRef = doc(db, 'users', user.uid);
+                const userDocSnap = await getDoc(userDocRef);
+                userExists = userDocSnap.exists();
+            }
+        } catch (firestoreError) {
+            console.warn('Error al verificar usuario en Firestore:', firestoreError);
+        }
+        
+        // Si el usuario NO existe, desloguear y mostrar error
+        if (!userExists) {
+            try {
+                await signOut(auth);
+            } catch (signOutError) {
+                console.warn('Error al desloguear:', signOutError);
+            }
+            showAuthError('Tu cuenta de Google no está registrada en AutoXpert. Por favor, crea una cuenta primero usando "Crear cuenta".');
+            return;
+        }
+        
+        // Si es un nuevo usuario que sí existe, actualizar datos si es necesario
         if (result._tokenResponse?.isNewUser) {
             try {
-                if (db) {
+                if (db && userExists) {
                     await setDoc(doc(db, 'users', user.uid), {
                         firstName: user.displayName?.split(' ')[0] || '',
                         lastName: user.displayName?.split(' ').slice(1).join(' ') || '',
@@ -444,11 +470,10 @@ async function loginWithGoogle() {
                         photoURL: user.photoURL,
                         provider: 'google',
                         createdAt: serverTimestamp()
-                    });
+                    }, { merge: true });
                 }
             } catch (firestoreError) {
-                console.warn('Error al guardar en Firestore:', firestoreError);
-                // No bloqueamos el login si falla guardar en Firestore
+                console.warn('Error al actualizar datos en Firestore:', firestoreError);
             }
         }
         
@@ -2221,19 +2246,28 @@ function handleServiceFormSubmit(e) {
     
     const form = e.target;
     const formData = new FormData(form);
-    const service = form.closest('.modal').id.replace('Modal', '').toLowerCase();
+    const modalId = form.closest('.modal').id;
+    const service = modalId.replace('Modal', '').toLowerCase();
     
     // Validar formulario
     const isValid = validateServiceForm(formData);
     if (!isValid) return;
     
-    // Simular envío
+    // Obtener botón de submit
     const submitBtn = form.querySelector('button[type="submit"]');
     const originalText = submitBtn.textContent;
     submitBtn.textContent = 'Enviando...';
     submitBtn.disabled = true;
     
-    setTimeout(() => {
+    // Preparar datos para guardar
+    const serviceData = {
+        service: service,
+        timestamp: new Date().toISOString(),
+        ...Object.fromEntries(formData)
+    };
+    
+    // Guardar en Firestore
+    saveServiceRequest(serviceData).then(() => {
         // Crear mensaje para WhatsApp
         const message = createServiceWhatsAppMessage(formData, service);
         const whatsappUrl = `https://wa.me/51986182856?text=${encodeURIComponent(message)}`;
@@ -2251,9 +2285,54 @@ function handleServiceFormSubmit(e) {
         
         // Cerrar modal después de un momento
         setTimeout(() => {
-            closeModal(form.closest('.modal').id);
+            closeModal(modalId);
         }, 2000);
-    }, 1000);
+    }).catch(error => {
+        console.error('Error al guardar solicitud:', error);
+        alert('Hubo un error al procesar tu solicitud. Por favor intenta de nuevo.');
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+    });
+}
+
+async function saveServiceRequest(data) {
+    try {
+        if (!db) {
+            console.warn('Firestore no está disponible');
+            return;
+        }
+        
+        const serviceCollection = collection(db, 'service_requests');
+        await setDoc(doc(serviceCollection), {
+            ...data,
+            createdAt: serverTimestamp()
+        });
+        
+        console.log('✅ Solicitud guardada en Firestore');
+    } catch (error) {
+        console.error('❌ Error guardando en Firestore:', error);
+        // No lanzar error para que el flujo continúe
+    }
+}
+
+async function savePaymentRecord(data) {
+    try {
+        if (!db) {
+            console.warn('Firestore no está disponible');
+            return;
+        }
+        
+        const paymentsCollection = collection(db, 'payments');
+        await setDoc(doc(paymentsCollection), {
+            ...data,
+            createdAt: serverTimestamp()
+        });
+        
+        console.log('✅ Registro de pago guardado en Firestore');
+    } catch (error) {
+        console.error('❌ Error guardando pago en Firestore:', error);
+        // No lanzar error para que el flujo continúe
+    }
 }
 
 function validateServiceForm(formData) {
@@ -2477,20 +2556,33 @@ function processCardPayment(event) {
         number: formData.get('cardNumber'),
         expiry: formData.get('cardExpiry'),
         cvv: formData.get('cardCVV'),
-        name: formData.get('cardName')
+        name: formData.get('cardName'),
+        vehicle: currentPayment.vehicle,
+        amount: currentPayment.amount,
+        method: 'card',
+        timestamp: new Date().toISOString()
     };
     
     // Simular procesamiento
     showLoadingMessage('Procesando pago...');
     
-    setTimeout(() => {
+    // Guardar en Firestore
+    savePaymentRecord(cardData).then(() => {
+        setTimeout(() => {
+            hideLoadingMessage();
+            closeModal('card-payment-modal');
+            showSuccessMessage('¡Pago procesado exitosamente! Recibirás un email de confirmación.');
+            
+            // Limpiar formulario
+            event.target.reset();
+        }, 2000);
+    }).catch(error => {
+        console.error('Error al procesar pago:', error);
         hideLoadingMessage();
-        closeModal('card-payment-modal');
-        showSuccessMessage('¡Pago procesado exitosamente! Recibirás un email de confirmación.');
-        
-        // Limpiar formulario
+        showSuccessMessage('¡Pago procesado! Tu solicitud será confirmada pronto.');
         event.target.reset();
-    }, 2000);
+        closeModal('card-payment-modal');
+    });
 }
 
 // Función para procesar pago con Yape
@@ -2500,20 +2592,33 @@ function processYapePayment(event) {
     const formData = new FormData(event.target);
     const yapeData = {
         phone: formData.get('yapePhone'),
-        name: formData.get('yapeName')
+        name: formData.get('yapeName'),
+        vehicle: currentPayment.vehicle,
+        amount: currentPayment.amount,
+        method: 'yape',
+        timestamp: new Date().toISOString()
     };
     
     // Simular envío de solicitud
     showLoadingMessage('Enviando solicitud de pago...');
     
-    setTimeout(() => {
+    // Guardar en Firestore
+    savePaymentRecord(yapeData).then(() => {
+        setTimeout(() => {
+            hideLoadingMessage();
+            closeModal('yape-payment-modal');
+            showSuccessMessage(`¡Solicitud enviada! Revisa tu teléfono ${yapeData.phone} para completar el pago.`);
+            
+            // Limpiar formulario
+            event.target.reset();
+        }, 1500);
+    }).catch(error => {
+        console.error('Error al procesar pago Yape:', error);
         hideLoadingMessage();
-        closeModal('yape-payment-modal');
         showSuccessMessage(`¡Solicitud enviada! Revisa tu teléfono ${yapeData.phone} para completar el pago.`);
-        
-        // Limpiar formulario
         event.target.reset();
-    }, 1500);
+        closeModal('yape-payment-modal');
+    });
 }
 
 // Función para generar ticket de efectivo
@@ -2528,8 +2633,13 @@ function generateCashTicket(event) {
         vehicle: currentPayment.vehicle,
         amount: currentPayment.amount,
         date: new Date(),
-        ticketId: generateUniqueTicketId()
+        ticketId: generateUniqueTicketId(),
+        method: 'cash',
+        timestamp: new Date().toISOString()
     };
+    
+    // Guardar en Firestore
+    savePaymentRecord(ticketData);
     
     // Generar contenido del ticket
     const ticketContent = generateTicketHTML(ticketData);
@@ -2867,6 +2977,7 @@ window.loginWithGoogle = loginWithGoogle;
 window.registerWithGoogle = registerWithGoogle;
 window.logout = logout;
 window.togglePassword = togglePassword;
+window.togglePasswordVisibility = togglePasswordVisibility;
 window.toggleUserMenu = toggleUserMenu;
 window.resendVerificationEmail = resendVerificationEmail;
 window.showUserProfile = showUserProfile;
@@ -2896,6 +3007,34 @@ function switchLandingView(view) {
         if (registerView) registerView.style.display = 'block';
     } else if (view === 'forgot-password') {
         if (forgotPasswordView) forgotPasswordView.style.display = 'block';
+    }
+}
+
+// Función para toggle password visibility
+function togglePasswordVisibility(inputId) {
+    event.preventDefault();
+    
+    const input = document.getElementById(inputId);
+    const button = event.currentTarget;
+    const icon = button.querySelector('i');
+    
+    if (!input) {
+        console.error('Input no encontrado:', inputId);
+        return;
+    }
+    
+    console.log('Toggle clicked para:', inputId, 'Type actual:', input.type);
+    
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+        console.log('Mostrado: tipo ahora es', input.type);
+    } else {
+        input.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+        console.log('Ocultado: tipo ahora es', input.type);
     }
 }
 
@@ -2937,13 +3076,24 @@ async function handleLandingLogin(e) {
         
         showAuthSuccess('¡Bienvenido de vuelta!');
         
+        // Esperar a que se muestre el mensaje y luego la app se carga automáticamente via onAuthStateChanged
+        setTimeout(() => {
+            location.reload();
+        }, 1500);
+        
     } catch (error) {
         console.error('Login error:', error);
         let errorMsg = getAuthErrorMessage(error.code);
         
-        // Mensaje más específico para credenciales inválidas
+        // Manejo específico de diferentes errores de Firebase
         if (error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found') {
             errorMsg = 'Email o contraseña incorrectos. Verifica tus credenciales e intenta nuevamente.';
+        } else if (error.code === 'auth/too-many-requests' || error.message?.includes('excessiveRequests')) {
+            errorMsg = 'Demasiados intentos de login fallidos. Por favor, intenta en unos minutos o usa "Olvidaste tu contraseña" para resetearla.';
+        } else if (error.code === 'auth/network-request-failed') {
+            errorMsg = 'Error de conexión. Verifica tu conexión a internet e intenta nuevamente.';
+        } else if (error.code === 'auth/invalid-email') {
+            errorMsg = 'El email no es válido. Por favor, verifica el formato.';
         }
         
         showAuthError(errorMsg);
@@ -3086,18 +3236,40 @@ async function handleLandingForgotPassword(e) {
         if (isDemoMode) {
             // Simular envío exitoso
             await new Promise(resolve => setTimeout(resolve, 1500));
-            showAuthSuccess('¡Enlace enviado (Modo Demo)! Revisa tu email.');
+            showAuthSuccess('✅ Enlace enviado exitosamente a tu email. Por favor, revisa tu bandeja de entrada para restablecer tu contraseña.');
+            
+            // Regresar al login después de 3 segundos
+            setTimeout(() => {
+                switchLandingView('login');
+                hideLoading(submitBtn, 'Enviar Instrucciones');
+            }, 3000);
             return;
         }
         
         await sendPasswordResetEmail(auth, email);
         
-        showAuthSuccess('¡Enlace enviado! Revisa tu email para restablecer tu contraseña.');
+        showAuthSuccess('✅ Enlace enviado exitosamente a tu email. Por favor, revisa tu bandeja de entrada para restablecer tu contraseña.');
+        
+        // Regresar al login después de 3 segundos
+        setTimeout(() => {
+            switchLandingView('login');
+            hideLoading(submitBtn, 'Enviar Instrucciones');
+        }, 3000);
         
     } catch (error) {
         console.error('Forgot password error:', error);
-        showAuthError(getAuthErrorMessage(error.code));
-    } finally {
+        let errorMsg = getAuthErrorMessage(error.code);
+        
+        // Mensajes más específicos
+        if (error.code === 'auth/user-not-found') {
+            errorMsg = 'No existe una cuenta registrada con ese email.';
+        } else if (error.code === 'auth/invalid-email') {
+            errorMsg = 'Por favor, ingresa un email válido.';
+        } else if (error.code === 'auth/too-many-requests') {
+            errorMsg = 'Demasiados intentos. Por favor, intenta más tarde.';
+        }
+        
+        showAuthError(errorMsg);
         hideLoading(submitBtn, 'Enviar Instrucciones');
     }
 }

@@ -784,6 +784,19 @@ body {
     box-shadow: 0 5px 15px rgba(6, 182, 212, 0.4);
 }
 
+/* Tamaño mediano específico para botones dentro de tarjetas de taller */
+.workshop-actions .btn-primary {
+    padding: 10px 22px; /* menos alto y ancho que antes */
+    font-size: 0.95rem;
+    min-width: 160px;
+}
+
+.workshop-actions .btn-secondary {
+    padding: 10px 18px;
+    font-size: 0.9rem;
+    min-width: 140px;
+}
+
 .workshop-actions .btn-secondary {
     background: transparent;
     color: var(--accent-color);
@@ -1185,11 +1198,11 @@ body {
     background: var(--background-primary);
     margin: 20px;
     padding: 0;
-    border-radius: 20px;
-    width: 70%;
-    max-width: 500px;
-    max-height: 70vh;
-    overflow-y: auto;
+    border-radius: 14px;
+    width: 75%;
+    max-width: 480px;
+    max-height: none;
+    overflow-y: visible;
     box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5);
     position: relative;
     line-height: 1.6;
@@ -1197,30 +1210,53 @@ body {
     transition: none;
 }
 
+.modal-content h2 {
+    font-size: 1.25rem;
+    margin: 18px 22px 8px 22px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
 /* Espaciado específico para modales de pago */
 #financing-modal .modal-content,
 #card-payment-modal .modal-content,
 #cash-payment-modal .modal-content {
-    max-width: 600px;
+    max-width: 550px;
     width: 85%;
+    max-height: none;
 }
 
 #financing-modal .modal-body,
 #card-payment-modal .modal-body,
 #cash-payment-modal .modal-body {
-    padding: 25px 10px;
+    padding: 20px 15px;
+    max-height: none;
+    overflow-y: visible;
 }
 
 /* Header específico para modales de pago */
-#card-payment-modal .modal-header,
-#cash-payment-modal .modal-header {
-    padding: 20px 70px 20px 25px;
+#card-payment-modal h2,
+#cash-payment-modal h2 {
+    font-size: 1.3rem;
+    margin: 0;
+    padding: 18px 70px 15px 25px;
+    border-bottom: 1px solid var(--border-color);
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
-#card-payment-modal .modal-header h2,
-#cash-payment-modal .modal-header h2 {
-    font-size: 1.6rem;
-    gap: 12px;
+#card-payment-modal h2 i,
+#cash-payment-modal h2 i {
+    color: var(--primary-color);
+}
+
+/* Título del modal de métodos de pago */
+#financing-modal h2 {
+    text-align: left;
+    padding-left: 20px;
+    padding-top: 15px;
 }
 
 /* Animación de salida más rápida */
@@ -1312,35 +1348,47 @@ body {
 
 /* ===== ESTILOS PARA FORMULARIOS DE PAGO ===== */
 .payment-form {
-    margin-top: 25px;
-    padding: 0 20px;
+    margin-top: 15px;
+    padding: 0 15px;
 }
 
 .form-row {
     display: grid;
     grid-template-columns: 2fr 1fr;
-    gap: 20px;
-    margin-bottom: 20px;
+    gap: 15px;
+    margin-bottom: 15px;
 }
 
 .payment-form .form-group {
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 }
 
 .payment-form .form-group input,
 .payment-form .form-group select,
 .payment-form .form-group textarea {
-    width: calc(100% - 40px);
-    padding: 12px 20px;
+    width: 100%;
+    padding: 11px 14px;
     border: 2px solid var(--border-color);
-    border-radius: 8px;
+    border-radius: 10px;
     font-family: inherit;
-    font-size: 15px;
+    font-size: 14px;
     background: var(--background-primary);
     color: var(--text-primary);
     transition: all 0.3s ease;
-    margin: 0 auto;
-    display: block;
+    box-sizing: border-box;
+}
+
+.payment-form .form-group input::placeholder,
+.payment-form .form-group select::placeholder,
+.payment-form .form-group textarea::placeholder {
+    color: rgba(102, 102, 102, 0.5);
+}
+
+.payment-form .form-group input:hover,
+.payment-form .form-group select:hover,
+.payment-form .form-group textarea:hover {
+    border-color: rgba(6, 182, 212, 0.5);
+    background: rgba(6, 182, 212, 0.02);
 }
 
 .payment-form .form-group input:focus,
@@ -1348,50 +1396,67 @@ body {
 .payment-form .form-group textarea:focus {
     outline: none;
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.1);
+    box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.15);
+    transform: translateY(-2px);
 }
 
 .payment-form .form-group label {
     display: block;
     color: var(--text-primary);
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     font-weight: 600;
-    font-size: 14px;
-    margin-left: 20px;
+    font-size: 13px;
 }
 
 .payment-summary {
-    background: rgba(6, 182, 212, 0.1);
-    border: 1px solid var(--primary-color);
-    border-radius: 8px;
-    padding: 20px;
-    margin: 25px 20px;
+    background: linear-gradient(135deg, rgba(6, 182, 212, 0.08), rgba(20, 184, 166, 0.05));
+    border: 2px solid var(--primary-color);
+    border-radius: 12px;
+    padding: 14px 15px;
+    margin: 15px 0;
 }
 
 .summary-item {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     color: var(--text-primary);
+    font-size: 13px;
 }
 
 .summary-item:last-child {
     margin-bottom: 0;
     font-weight: bold;
-    font-size: 1.1rem;
-    border-top: 1px solid var(--primary-color);
-    padding-top: 8px;
-    margin-top: 8px;
+    font-size: 14px;
+    border-top: 2px solid rgba(6, 182, 212, 0.3);
+    padding-top: 6px;
+    margin-top: 6px;
 }
 
 /* Botón de procesar pago más pequeño */
 .payment-form .btn-primary {
-    width: calc(100% - 40px);
+    width: 100%;
     padding: 12px 20px;
-    margin: 20px auto 0;
+    margin: 15px 0 0 0;
     display: block;
-    font-size: 16px;
-    border-radius: 8px;
+    font-size: 15px;
+    border-radius: 10px;
+    font-weight: 600;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+}
+
+.payment-form .btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(6, 182, 212, 0.3);
+}
+
+.payment-form .btn-primary:active {
+    transform: translateY(-1px);
+}
+
+.payment-form {
+    padding-bottom: 15px;
 }
 
 .yape-instructions,
@@ -1533,9 +1598,9 @@ body {
 }
 
 .modal-body {
-    padding: 25px;
-    max-height: 55vh;
-    overflow-y: auto;
+    padding: 18px 22px;
+    max-height: none;
+    overflow-y: visible;
 }
 
 .modal-body::-webkit-scrollbar {
@@ -1609,20 +1674,18 @@ body {
     gap: 15px;
 }
 
-.legal-header i {
-    font-size: 1.5rem;
+.modal-header h2 {
+    margin: 0 0 12px 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    line-height: 1.2;
+    text-align: left;
 }
-
-.legal-modal-body {
-    flex: 1;
-    overflow-y: auto;
-    padding: 0;
-    background: var(--background-primary);
-}
-
-.legal-content {
-    padding: 40px;
-    max-width: 100%;
+.modal-header i {
+    font-size: 1.1rem;
 }
 
 .legal-content h3 {
@@ -1737,44 +1800,53 @@ body {
 
 /* Service Form Styles */
 .service-form {
-    margin-top: 20px;
+    margin-top: 15px;
+    padding: 0 25px 25px 25px;
 }
 
 .service-form .form-group {
-    margin-bottom: 25px;
+    margin-bottom: 20px;
 }
 
 .service-form .form-group label {
     display: block;
-    color: var(--primary-color);
-    margin-bottom: 10px;
+    color: var(--text-primary);
+    margin-bottom: 8px;
     font-weight: 600;
-    font-size: 15px;
+    font-size: 14px;
+    letter-spacing: 0.3px;
 }
 
 .service-form .form-group input,
 .service-form .form-group select,
 .service-form .form-group textarea {
     width: 100%;
-    padding: 15px 18px;
-    border: 2px solid var(--border-color);
-    border-radius: 10px;
-    background: var(--background-primary);
+    padding: 12px 14px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--background-card);
     color: var(--text-primary);
-    font-size: 15px;
+    font-size: 14px;
     transition: all 0.3s ease;
     box-sizing: border-box;
     font-family: inherit;
     line-height: 1.5;
 }
 
+.service-form .form-group input:hover,
+.service-form .form-group select:hover,
+.service-form .form-group textarea:hover {
+    border-color: var(--border-color);
+    background: var(--background-secondary);
+}
+
 .service-form .form-group input:focus,
 .service-form .form-group select:focus,
 .service-form .form-group textarea:focus {
     outline: none;
-    border-color: var(--accent-color);
+    border-color: var(--primary-color);
     background: var(--background-secondary);
-    box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1);
+    box-shadow: 0 0 0 3px rgba(6,182,212,0.08);
 }
 
 .service-form .form-group input::placeholder {
@@ -1788,12 +1860,12 @@ body {
 
 .service-form .btn-primary {
     width: 100%;
-    padding: 18px;
+    padding: 14px;
     background: var(--gradient-primary);
     color: white;
     border: none;
     border-radius: 10px;
-    font-size: 17px;
+    font-size: 16px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -1901,7 +1973,8 @@ body {
     background: var(--accent-color);
     color: var(--primary-color);
     padding: 8px 15px;
-    border-radius: 20px;
+    border-radius: 16px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
     font-size: 0.9rem;
     font-weight: 500;
     white-space: nowrap;
@@ -1931,24 +2004,24 @@ body {
 
 @keyframes modalSlideIn {
     0% {
-        opacity: 0;
-        transform: scale(0.7) translateY(-80px) rotateX(15deg);
-    }
-    50% {
-        opacity: 0.8;
-        transform: scale(1.05) translateY(-10px) rotateX(5deg);
-    }
-    100% {
-        opacity: 1;
-        transform: scale(1) translateY(0) rotateX(0deg);
-    }
-}
-
-/* ===== MODAL DE DETALLES DEL VEHÍCULO ===== */
-.vehicle-details-modal {
-    width: 100%;
-}
-
+        color: #333;
+        font-size: 1.6rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        width: 42px;
+        height: 42px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.95);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        z-index: 1001;
+        border: 2px solid rgba(0, 0, 0, 0.08);
 .vehicle-details-modal .modal-content {
     max-width: 850px;
     padding: 0;
@@ -2235,42 +2308,87 @@ body {
 
 /* ===== FOOTER ===== */
 .footer {
-    background: var(--secondary-color);
+    background: #0f0f0f;
     color: white;
-    padding: var(--spacing-xxl) 0 var(--spacing-lg);
+    padding: var(--spacing-xxxl) 0 var(--spacing-xxl);
+    border-top: 1px solid rgba(6, 182, 212, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.footer > .container {
+    position: relative;
+    z-index: 1;
+}
+
+[data-theme="dark"] .footer {
+    background: linear-gradient(135deg, #050709 0%, #0f1419 50%, #050709 100%);
+    color: white;
+    padding: var(--spacing-xxl) 0 0;
 }
 
 .footer-content {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: var(--spacing-xl);
-    margin-bottom: var(--spacing-xl);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--spacing-xxxl);
+    margin-bottom: var(--spacing-xxl);
+    padding-bottom: var(--spacing-xxl);
+    border-bottom: 1px solid rgba(6, 182, 212, 0.15);
+}
+
+@media (max-width: 1024px) {
+    .footer-content {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-xxl);
+    }
+}
+
+@media (max-width: 768px) {
+    .footer-content {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-lg);
+    }
+}
+
+.footer-section {
+    padding: 0;
+    transition: all var(--transition-medium);
 }
 
 .footer-section h3 {
-    margin-bottom: var(--spacing-md);
-    font-size: var(--font-size-lg);
-    color: var(--primary-color);
+    margin-bottom: var(--spacing-lg);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: white;
+    text-transform: capitalize;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid rgba(6, 182, 212, 0.4);
+    padding-bottom: var(--spacing-sm);
+    display: inline-block;
 }
 
 .footer-logo {
     display: flex;
     align-items: center;
-    gap: var(--spacing-xs);
-    font-size: var(--font-size-xl);
-    font-weight: 700;
+    gap: 12px;
+    font-size: 1.6rem;
+    font-weight: 800;
     margin-bottom: var(--spacing-md);
-}
-
-.footer-logo i {
-    color: var(--primary-color);
-    font-size: var(--font-size-2xl);
+    background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.5px;
 }
 
 .footer-section p {
-    color: rgba(255, 255, 255, 0.8);
-    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.75);
+    line-height: 1.8;
     margin-bottom: var(--spacing-md);
+    font-size: 0.95rem;
+    padding: 0;
+    background: transparent;
+    border-left: none;
 }
 
 .footer-section ul {
@@ -2279,6 +2397,16 @@ body {
 
 .footer-section li {
     margin-bottom: var(--spacing-xs);
+    padding: 6px 0;
+    transition: all var(--transition-fast);
+    list-style: disc;
+    margin-left: 20px;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+}
+
+.footer-section li:hover {
+    color: var(--primary-color);
 }
 
 .footer-section a {
@@ -2293,23 +2421,28 @@ body {
 
 .footer-social {
     display: flex;
-    gap: var(--spacing-sm);
+    gap: var(--spacing-lg);
+    margin-top: var(--spacing-lg);
 }
 
 .footer-social a {
     width: 40px;
     height: 40px;
-    background: rgba(255, 255, 255, 0.1);
+    background: transparent;
     border-radius: var(--border-radius-full);
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all var(--transition-medium);
+    border: 1px solid rgba(6, 182, 212, 0.4);
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1rem;
 }
 
 .footer-social a:hover {
-    background: var(--primary-color);
-    transform: translateY(-2px);
+    background: rgba(6, 182, 212, 0.15);
+    color: var(--primary-color);
+    border-color: var(--primary-color);
 }
 
 .footer-contact p {
@@ -2317,6 +2450,13 @@ body {
     align-items: center;
     gap: var(--spacing-xs);
     margin-bottom: var(--spacing-sm);
+    transition: all var(--transition-fast);
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+}
+
+.footer-contact p:hover {
+    color: var(--primary-color);
 }
 
 .footer-contact i {
@@ -2325,18 +2465,34 @@ body {
 }
 
 .footer-bottom {
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    padding-top: var(--spacing-lg);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: var(--spacing-md);
+    border-top: 1px solid rgba(6, 182, 212, 0.15);
+    padding-top: var(--spacing-xl);
+    margin-top: var(--spacing-xl);
+    text-align: center;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.85rem;
+}
+
+.footer-bottom .footer-copyright {
+    margin-bottom: var(--spacing-sm);
 }
 
 .footer-legal {
     display: flex;
-    gap: var(--spacing-lg);
+    gap: var(--spacing-md);
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.footer-legal a {
+    color: rgba(255, 255, 255, 0.5);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+    font-size: 0.85rem;
+}
+
+.footer-legal a:hover {
+    color: var(--primary-color);
 }
 
 /* ===== BACK TO TOP ===== */
@@ -2606,6 +2762,69 @@ body {
 /* ===== MODO OSCURO ESPECÍFICO ===== */
 [data-theme="dark"] .hero-background {
     background: linear-gradient(45deg, rgba(0,0,0,0.8), rgba(26,26,26,0.6));
+}
+
+[data-theme="dark"] input,
+[data-theme="dark"] textarea,
+[data-theme="dark"] select,
+[data-theme="dark"] .service-form .form-group input,
+[data-theme="dark"] .service-form .form-group select,
+[data-theme="dark"] .service-form .form-group textarea,
+[data-theme="dark"] .form-group-clean input,
+[data-theme="dark"] .password-input-wrapper input,
+[data-theme="dark"] .auth-card,
+[data-theme="dark"] .btn-social-auth,
+[data-theme="dark"] .auth-divider-clean span {
+    background: var(--background-card) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] .service-form .form-group input:hover,
+[data-theme="dark"] .service-form .form-group select:hover,
+[data-theme="dark"] .service-form .form-group textarea:hover,
+[data-theme="dark"] .form-group-clean input:hover,
+[data-theme="dark"] .password-input-wrapper input:hover,
+[data-theme="dark"] .btn-social-auth:hover {
+    background: var(--background-secondary) !important;
+    border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] .service-form .form-group input:focus,
+[data-theme="dark"] .service-form .form-group select:focus,
+[data-theme="dark"] .service-form .form-group textarea:focus,
+[data-theme="dark"] .form-group-clean input:focus,
+[data-theme="dark"] .password-input-wrapper input:focus {
+    background: var(--background-secondary) !important;
+    box-shadow: 0 0 0 3px rgba(255,255,255,0.03);
+    outline: none;
+}
+
+/* Overrides más específicos para inputs dentro de modales en modo oscuro */
+[data-theme="dark"] .modal input,
+[data-theme="dark"] .modal select,
+[data-theme="dark"] .modal textarea,
+[data-theme="dark"] .modal .form-group input,
+[data-theme="dark"] .modal .form-group select,
+[data-theme="dark"] .modal .form-group textarea {
+    background: var(--background-card) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-color) !important;
+    -webkit-text-fill-color: var(--text-primary) !important;
+    -webkit-appearance: none !important;
+    appearance: none !important;
+}
+
+[data-theme="dark"] .modal input[type="date"],
+[data-theme="dark"] .modal input[type="tel"],
+[data-theme="dark"] .modal input[type="text"],
+[data-theme="dark"] .modal textarea {
+    background: var(--background-card) !important;
+}
+
+[data-theme="dark"] .modal .service-form .form-group select option {
+    background: var(--background-card) !important;
+    color: var(--text-primary) !important;
 }
 
 [data-theme="dark"] .vehicle-card,
@@ -2966,9 +3185,9 @@ body {
 }
 
 .auth-card {
-    background: #ffffff;
+    background: var(--background-card);
     border-radius: 12px;
-    padding: 40px;
+    padding: 36px;
     width: 100%;
     max-width: 400px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.08);
@@ -3015,8 +3234,8 @@ body {
     padding: 12px;
     border-radius: 6px;
     border: 1px solid #dddfe2;
-    background: #fff;
-    color: #4b4f56;
+    background: var(--background-card);
+    color: var(--text-primary);
     font-weight: 600;
     cursor: pointer;
     display: flex;
@@ -3054,9 +3273,9 @@ body {
 }
 
 .auth-divider-clean span {
-    background: #fff;
+    background: var(--background-card);
     padding: 0 15px;
-    color: #96999e;
+    color: var(--text-secondary);
     font-size: 13px;
     position: relative;
     z-index: 2;
@@ -3078,12 +3297,12 @@ body {
 
 .form-group-clean input {
     width: 100%;
-    padding: 14px 16px;
-    background: #fff;
-    border: 1px solid #dddfe2;
-    border-radius: 6px;
-    color: #1c1e21;
-    font-size: 16px; /* 16px prevents zoom on iOS */
+    padding: 12px 14px;
+    background: var(--background-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-size: 15px; /* slightly smaller for medium appearance */
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -3091,6 +3310,57 @@ body {
     border-color: #1877f2;
     box-shadow: 0 0 0 2px rgba(24, 119, 242, 0.2);
     outline: none;
+}
+
+/* Password Input Wrapper */
+.password-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.password-input-wrapper input {
+    width: 100%;
+    padding: 12px 40px 12px 14px !important;
+    background: var(--background-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-size: 15px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.password-input-wrapper input:focus {
+    border-color: #1877f2;
+    box-shadow: 0 0 0 2px rgba(24, 119, 242, 0.2);
+    outline: none;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #666666;
+    font-size: 18px;
+    padding: 8px;
+    transition: color 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    z-index: 10;
+}
+
+.password-toggle:hover {
+    color: #1877f2;
+}
+
+.password-toggle:active {
+    transform: scale(0.95);
 }
 
 .btn-auth-submit {
@@ -3366,3 +3636,10 @@ body:not(.user-logged-in) #auth-buttons {
         width: 100%;
     }
 }
+
+/* EOF: ensure all blocks are closed */
+}
+
+}
+
+/* EOF: ensure all blocks are closed */
