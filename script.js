@@ -46,9 +46,9 @@ try {
         // No bloqueamos la app si Analytics falla
     }
     
-    console.log('✅ Firebase inicializado correctamente');
+    console.log('Firebase inicializado correctamente');
 } catch (firebaseError) {
-    console.error('❌ Error al inicializar Firebase:', firebaseError);
+    console.error('Error al inicializar Firebase:', firebaseError);
     // Mostrar mensaje al usuario
     setTimeout(() => {
         if (typeof showAuthError === 'function') {
@@ -102,7 +102,7 @@ function initializeAppUI() {
         clearLoginFields();
     }, 200);
     
-    console.log('🚗 AutoXpert - Aplicación inicializada correctamente');
+    console.log('AutoXpert - Aplicación inicializada correctamente');
 }
 
 function clearLoginFields() {
@@ -494,7 +494,7 @@ async function loginWithGoogle() {
         } else if (error.code === 'auth/popup-blocked') {
             errorMessage = 'Ventana emergente bloqueada. Permite ventanas emergentes para este sitio.';
         } else if (error.code === 'auth/unauthorized-domain') {
-            errorMessage = '⚠️ Dominio no autorizado para Google Auth\n\n' +
+            errorMessage = 'Dominio no autorizado para Google Auth\n\n' +
                           'Solución:\n' +
                           '1. Ve a Firebase Console: https://console.firebase.google.com/\n' +
                           '2. Selecciona tu proyecto "autoxpert-e3d12"\n' +
@@ -508,7 +508,7 @@ async function loginWithGoogle() {
                    error.code === 'auth/invalid-api-key' ||
                    error.message?.includes('API key not valid') ||
                    error.message?.includes('API_KEY_INVALID')) {
-            errorMessage = '⚠️ API Key de Firebase inválida\n\n' +
+            errorMessage = 'API Key de Firebase inválida\n\n' +
                           'Solución:\n' +
                           '1. Ve a https://console.firebase.google.com/\n' +
                           '2. Selecciona tu proyecto "autoxpert-e3d12"\n' +
@@ -767,12 +767,15 @@ function initializeThemeToggle() {
 
 function applyTheme(theme) {
     document.documentElement.setAttribute('data-theme', theme);
-    const themeToggle = document.querySelector('.theme-toggle i');
-    
+    const themeToggle = document.querySelector('.theme-toggle');
+    const themeLabel = themeToggle.querySelector('.theme-label');
+
     if (theme === 'dark') {
-        themeToggle.className = 'fas fa-sun';
+        themeLabel.textContent = 'Modo Claro';
+        themeToggle.classList.add('dark');
     } else {
-        themeToggle.className = 'fas fa-moon';
+        themeLabel.textContent = 'Modo Oscuro';
+        themeToggle.classList.remove('dark');
     }
 }
 
@@ -908,7 +911,7 @@ function loadVehicleCatalog() {
             name: 'Suzuki Swift Sport',
             brand: 'suzuki',
             price: 'S/ 100,000',
-            image: 'https://www.autoindustriya.com/cdn-cgi/image/width=720,quality=60,format=auto/images/posts/post26650.jpg',
+            image: 'https://www.elcarrocolombiano.com/wp-content/uploads/2020/04/20200404-SUZUKI-SWIFT-SPORT-SERIE-II-01.jpg',
             description: 'Compacto deportivo con excelente relación precio-rendimiento.',
             specs: {
                 engine: '1.4L Turbo',
@@ -1077,7 +1080,7 @@ function loadVehicleCatalog() {
             name: 'Lamborghini Gallardo',
             brand: 'lamborghini',
             price: 'S/ 880,000',
-            image: 'https://www.qonecta.com/documents/80345/93398/09-Lamborghini_Gallardo_LP570-4_Squadra_Corse.jpg/2626eb27-9f41-4a22-a701-2ac891dbf4d2',
+            image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRV-YAjn1f3AIb30imc2Lnd1Y3xDT4Th1YRrw&s',
             description: 'Deportivo clásico con motor V10 y diseño atemporal.',
             specs: {
                 engine: 'V10 5.2L',
@@ -1577,15 +1580,15 @@ function loadVehicleCatalog() {
 }
 
 function renderVehicles(vehicles) {
-    console.log('🚗 Renderizando vehículos:', vehicles.length);
+    console.log('Renderizando vehículos:', vehicles.length);
     const vehiclesGrid = document.querySelector('.vehicles-grid');
     
     if (!vehiclesGrid) {
-        console.error('❌ No se encontró el elemento vehicles-grid');
+        console.error('No se encontró el elemento vehicles-grid');
         return;
     }
     
-    console.log('✅ Elemento vehicles-grid encontrado');
+    console.log('Elemento vehicles-grid encontrado');
     
     vehiclesGrid.innerHTML = vehicles.map(vehicle => `
         <div class="vehicle-card" data-category="${vehicle.category}">
@@ -1625,11 +1628,11 @@ function renderVehicles(vehicles) {
         </div>
     `).join('');
     
-    console.log('✅ Vehículos renderizados correctamente');
+    console.log('Vehículos renderizados correctamente');
     
     // Verificar que los botones se crearon correctamente
     const buttons = vehiclesGrid.querySelectorAll('.btn');
-    console.log('🔘 Botones encontrados:', buttons.length);
+    console.log('Botones encontrados:', buttons.length);
 }
 
 // ===== FUNCIONES DE CONTACTO =====
@@ -1900,7 +1903,7 @@ function showFormSuccess() {
                 margin-bottom: 1rem;
                 animation: scaleIn 0.6s ease-out;
             ">
-                ✅
+                Correcto
             </div>
             <div style="
                 font-size: 1.3rem;
@@ -2392,15 +2395,15 @@ function createServiceWhatsAppMessage(formData, service) {
     const email = formData.get('email') || formData.get('salesEmail');
     const message = formData.get('message') || formData.get('comments') || 'Sin mensaje adicional';
     
-    let whatsappMessage = `🚗 *Solicitud de ${serviceName}*\n\n` +
-                         `👤 *Nombre:* ${name}\n` +
-                         `📱 *Teléfono:* ${phone}\n`;
+    let whatsappMessage = `Solicitud de ${serviceName}\n\n` +
+                         `Nombre: ${name}\n` +
+                         `Teléfono: ${phone}\n`;
     
     if (email) {
-        whatsappMessage += `📧 *Email:* ${email}\n`;
+        whatsappMessage += `Email: ${email}\n`;
     }
     
-    whatsappMessage += `💬 *Mensaje:* ${message}\n\n` +
+    whatsappMessage += `Mensaje: ${message}\n\n` +
                       `Enviado desde AutoXpert`;
     
     return whatsappMessage;
@@ -2680,7 +2683,7 @@ function generateTicketHTML(data) {
     
     return `
         <div class="ticket-header">
-            <h3>🚗 AUTOXPERT</h3>
+            <h3>AUTOXPERT</h3>
             <p>Concesionaria de Vehículos</p>
             <p>Lima, Perú</p>
         </div>
@@ -3209,7 +3212,7 @@ async function handleLandingRegister(e) {
         if (error.code === 'auth/api-key-not-valid' || 
             error.code === 'auth/invalid-api-key' ||
             error.message?.includes('API key not valid')) {
-            errorMsg = '⚠️ API Key de Firebase inválida\n\n' +
+            errorMsg = 'API Key de Firebase inválida\n\n' +
                       'Solución:\n' +
                       '1. Ve a https://console.firebase.google.com/\n' +
                       '2. Selecciona tu proyecto\n' +
@@ -3455,4 +3458,4 @@ function initializeAuthBackground() {
     }
 }
 
-console.log('🚗 AutoXpert JavaScript cargado correctamente');
+console.log('AutoXpert JavaScript cargado correctamente');
